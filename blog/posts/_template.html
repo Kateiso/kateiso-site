@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- 使用指南：复制此文件为 blog/posts/<slug>.html 并替换下列字段 -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Your Post Title · Kateiso</title>
+  <meta name="description" content="One-sentence summary (140–160 chars) describing the article." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../assets/css/styles.css" />
+</head>
+<body class="with-subpage-header">
+  <header class="site-header" data-js="nav">
+    <div class="site-header__inner">
+      <a class="site-logo" href="../../index.html">Kateiso</a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <button class="site-nav__toggle" type="button" aria-expanded="false" aria-controls="site-menu">
+          <span class="visually-hidden">Toggle navigation</span>
+          <span class="site-nav__icon" aria-hidden="true"></span>
+        </button>
+        <ul id="site-menu" class="site-nav__list">
+          <li><a href="../../index.html#about">About</a></li>
+          <li><a href="../../index.html#focus">Focus</a></li>
+          <li><a href="../index.html">Journal</a></li>
+          <li><a href="../../index.html#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="article">
+    <article>
+      <header class="article__header">
+        <!-- 示例：Essay · October 2025 -->
+        <p class="article__meta">Type · Month Year</p>
+        <h1>Your Post Title</h1>
+        <p class="article__summary">Short summary that sets context and promise for the reader.</p>
+      </header>
+
+      <!-- 可选：主图或插图 -->
+      <!-- <figure class="article__figure">
+        <img src="../../assets/media/posts/your-slug/cover.webp" alt="Descriptive alt text" />
+        <figcaption>Optional caption</figcaption>
+      </figure> -->
+
+      <section class="article__section">
+        <h2>Section heading</h2>
+        <p>Write your content here. Keep paragraphs concise. Use semantic headings to structure long-form writing.</p>
+      </section>
+
+      <section class="article__section">
+        <h2>Another section</h2>
+        <p>Support the main idea with examples, frameworks, or checklists.</p>
+      </section>
+
+      <footer class="article__footer">
+        <p>Questions or collaborations? Email <a href="mailto:C.yibo2@gmail.com">C.yibo2@gmail.com</a>.</p>
+      </footer>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <p class="site-footer__brand">© <span data-js="year"></span> Kateiso. All rights reserved.</p>
+      <nav class="site-footer__nav" aria-label="Secondary navigation">
+        <a href="../index.html">Journal</a>
+        <span aria-hidden="true">·</span>
+        <span class="site-footer__placeholder">Works (coming soon)</span>
+        <span aria-hidden="true">·</span>
+        <span class="site-footer__placeholder">Lab (future)</span>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../../assets/js/site.js" defer></script>
+  <!-- 发布检查清单：
+    [ ] Title <= 60 chars，末尾含 “· Kateiso”
+    [ ] Meta description 140–160 chars
+    [ ] 图片已压缩，含 alt 文案
+    [ ] blog/index.html 添加卡片
+    [ ] 首页 index.html 更新 journal-grid（可选，仅展示 3 篇）
+  -->
+</body>
+</html>
+
