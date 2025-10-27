@@ -6,7 +6,7 @@ const posts = defineCollection({
     title: z.string(),
     description: z.string(),
     type: z.string().default('Essay'),
-    date: z.string(),
+    date: z.coerce.date(),
     summary: z.string(),
     cover: z.string().optional(),
     tags: z.array(z.string()).default([]),
@@ -14,4 +14,3 @@ const posts = defineCollection({
 });
 
 export const collections = { posts };
-

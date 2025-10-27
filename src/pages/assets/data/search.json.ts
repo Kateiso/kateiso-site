@@ -7,7 +7,7 @@ export async function GET() {
     title: p.data.title,
     summary: p.data.summary || p.data.description,
     type: p.data.type,
-    date: p.data.date,
+    date: p.data.date instanceof Date ? p.data.date.toISOString() : String(p.data.date),
     tags: p.data.tags || [],
   }));
 
@@ -24,4 +24,3 @@ export async function GET() {
     headers: { 'Content-Type': 'application/json' }
   });
 }
-
