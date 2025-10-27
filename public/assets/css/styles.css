@@ -138,3 +138,21 @@ a:hover, a:focus { color: var(--color-accent); }
 .gallery-item__date { opacity: 0.9; }
 .gallery-item__title { opacity: 0.9; }
 
+/* Subtle hero option (less like a PPT cover) */
+.hero--subtle::before, .hero--subtle::after { display: none; }
+.hero--subtle .hero__title { font-weight: 600; letter-spacing: -0.01em; }
+.hero--subtle .hero__subtitle { color: rgba(38,4,13,0.66); }
+
+/* Photos page */
+.photos-filter { display: flex; gap: var(--spacing-xs); flex-wrap: wrap; align-items: center; }
+.photos-filter a { padding: 0.35rem 0.7rem; border: 1px solid var(--color-border); border-radius: 999px; }
+.photos-filter a.is-active { background: var(--color-accent); color: var(--color-surface); border-color: transparent; }
+
+/* Lightbox */
+.lightbox { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: rgba(0,0,0,0.6); }
+.lightbox[hidden] { display: none; }
+.lightbox__inner { position: relative; max-width: min(1000px, 92vw); max-height: 90vh; background: #000; border-radius: 14px; padding: 0.5rem; }
+.lightbox__inner video, .lightbox__inner img { max-width: 100%; max-height: 78vh; display: block; margin: 0 auto; }
+.lightbox__caption { color: #fff; opacity: 0.9; padding: 0.4rem; text-align: center; }
+.lightbox__close { position: absolute; top: 6px; right: 8px; background: rgba(255,255,255,0.15); color: #fff; border: none; border-radius: 10px; padding: 0.3rem 0.5rem; }
+.lightbox__backdrop { position: fixed; inset: 0; background: transparent; border: none; }

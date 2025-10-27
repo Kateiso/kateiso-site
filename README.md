@@ -22,7 +22,8 @@
 - `src/pages/rss.xml.ts`：RSS 输出
 - `public/assets/`：样式、脚本与图片（从原 `assets/` 迁移）
 - `public/CNAME`：`kateiso.dev`
- - `inbox/`：媒体收集文件夹（投放原始图片/Live Photo）
+- `inbox/`：媒体收集文件夹（投放原始图片/Live Photo）
+ - `templates/post.md`：Markdown 文章模板（放入 inbox 后自动转为正式文章）
 
 ## 写作（Markdown）
 
@@ -42,11 +43,24 @@
 
 - 将照片放入仓库根目录的 `inbox/` 文件夹。支持：`.jpg/.jpeg/.png/.webp/.heic`，以及与之同名的 `.mov`（Apple Live Photo）。
 - 运行 `npm run media:inbox`（或执行 `npm run build` 时自动运行），脚本会：
-  - 读取文件创建时间（birthtime）作为展示日期；
+  - 优先读取 EXIF 拍摄时间作为展示日期（若缺失才回退到文件创建时间）；
   - 将文件移动到 `public/assets/media/gallery/` 并按 `YYYY-MM-DD_<slug>.<ext>` 重新命名；
   - 生成 `public/assets/data/gallery.json` 作为首页相册数据源；
   - 如果存在同名的图片+`.mov`，会自动配对为“动图”（静态封面+静音视频）。
+  - 标题/说明来自源文件文件名（不含扩展名），会在站点上展示。
 - 注意：若拷贝行为改变了创建时间，可后续扩展为读取 EXIF 时间。
+
+## Inbox 接收文章（Markdown）
+
+- 使用模板：`templates/post.md`（含必要 Frontmatter 字段）。
+- 将写好的 `.md` 放到 `inbox/` 或 `inbox/posts/`。
+- 运行 `npm run media:inbox`（或构建时自动），脚本会把符合要求的文章移动到 `src/content/posts/<slug>.md`，`<slug>` 来自文件名（kebab-case）。
+
+## 照片页与筛选
+
+- `/photos/` 页面使用与首页相同的数据源（manifest）。
+- 支持按年份筛选（`?year=YYYY`）。
+- 点击图片/动图可放大查看（Lightbox）。
 
 ## 搜索 / RSS / 站点地图 / 统计
 

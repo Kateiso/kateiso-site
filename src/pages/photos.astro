@@ -1,0 +1,109 @@
+---
+import Base from "../../src/layouts/Base.astro";
+import fs from 'node:fs/promises';
+const pageTitle = 'Photos · Kateiso';
+const pageDesc = 'A minimal, artistic photo stream with year filters.';
+let items = [] as any[];
+try {
+  const raw = await fs.readFile('public/assets/data/gallery.json', 'utf8');
+  const json = JSON.parse(raw);
+  items = json.items || [];
+} catch {}
+
+const years = Array.from(new Set(items.map((i) => (i.date || '').slice(0,4)))).filter(Boolean).sort((a,b) => (a < b ? 1 : -1));
+const url = new URL(Astro.request.url);
+const activeYear = url.searchParams.get('year');
+const filtered = activeYear ? items.filter((i) => (i.date || '').startsWith(activeYear)) : items;
+---
+<Base title={pageTitle} description={pageDesc}>
+  <section class="section">
+    <div class="section__intro section__intro--split">
+      <div>
+        <h1>Photos</h1>
+        <p class="section__lede">Enjoy Life, Enjoy with U.</p>
+      </div>
+      <nav aria-label="Year filter" class="photos-filter">
+        <a href="/photos/" class={activeYear ? '' : 'is-active'}>All</a>
+        {years.map((y) => <a href={`/photos/?year=${y}`} class={activeYear === y ? 'is-active' : ''}>{y}</a>)}
+      </nav>
+    </div>
+
+    <div class="gallery-grid" id="gallery">
+      {filtered.map((it) => (
+        <figure class="gallery-item">
+          <button class="gallery-item__btn" data-image={it.image} data-video={it.video || ''} data-title={it.title} data-date={it.date} aria-label={`Open ${it.title}`}>
+            {it.video ? (
+              <video class="gallery-item__media" src={it.video} poster={it.image} muted playsinline preload="metadata" loop></video>
+            ) : (
+              <img class="gallery-item__media" src={it.image} alt={it.title} loading="lazy" />
+            )}
+            <figcaption class="gallery-item__meta">
+              <span class="gallery-item__date">{it.date}</span>
+              <span aria-hidden="true">·</span>
+              <span class="gallery-item__title">{it.title}</span>
+            </figcaption>
+          </button>
+        </figure>
+      ))}
+    </div>
+  </section>
+
+  <div class="lightbox" id="lightbox" hidden>
+    <button class="lightbox__backdrop" data-action="close" aria-label="Close"></button>
+    <div class="lightbox__inner" role="dialog" aria-modal="true">
+      <figure>
+        <div id="lightbox-media"></div>
+        <figcaption class="lightbox__caption"><span id="lightbox-date"></span> · <span id="lightbox-title"></span></figcaption>
+      </figure>
+      <button class="lightbox__close" data-action="close" aria-label="Close">✕</button>
+    </div>
+  </div>
+
+  <script>
+    const lb = document.getElementById('lightbox');
+    const media = document.getElementById('lightbox-media');
+    const title = document.getElementById('lightbox-title');
+    const date = document.getElementById('lightbox-date');
+    document.querySelectorAll('.gallery-item__btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const img = btn.getAttribute('data-image');
+        const vid = btn.getAttribute('data-video');
+        title.textContent = btn.getAttribute('data-title') || '';
+        date.textContent = btn.getAttribute('data-date') || '';
+        media.innerHTML = '';
+        if (vid) {
+          const v = document.createElement('video');
+          v.src = vid;
+          v.poster = img || '';
+          v.controls = true;
+          v.autoplay = true;
+          v.playsInline = true;
+          media.appendChild(v);
+        } else if (img) {
+          const i = document.createElement('img');
+          i.src = img;
+          i.alt = title.textContent || '';
+          media.appendChild(i);
+        }
+        lb.hidden = false;
+        document.body.style.overflow = 'hidden';
+      });
+    });
+    lb.addEventListener('click', (e) => {
+      if ((e.target).dataset?.action === 'close') {
+        lb.hidden = true;
+        document.body.style.overflow = '';
+        const v = media.querySelector('video');
+        if (v) v.pause();
+      }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !lb.hidden) {
+        lb.hidden = true;
+        document.body.style.overflow = '';
+        const v = media.querySelector('video');
+        if (v) v.pause();
+      }
+    });
+  </script>
+</Base>
