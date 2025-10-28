@@ -23,8 +23,8 @@ const filtered = activeYear ? items.filter((i) => (i.date || '').startsWith(acti
         <p class="section__lede">Enjoy Life, Enjoy with U.</p>
       </div>
       <nav aria-label="Year filter" class="photos-filter">
-        <a href="/photos/" class={activeYear ? '' : 'is-active'}>All</a>
-        {years.map((y) => <a href={`/photos/?year=${y}`} class={activeYear === y ? 'is-active' : ''}>{y}</a>)}
+        <a href="/photos.html" class={activeYear ? '' : 'is-active'}>All</a>
+        {years.map((y) => <a href={`/photos.html?year=${y}`} class={activeYear === y ? 'is-active' : ''}>{y}</a>)}
       </nav>
     </div>
 
