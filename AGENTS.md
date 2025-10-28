@@ -60,6 +60,7 @@ Styling and Semantics
 - BEM class names (e.g., `site-header__inner`, `journal-card__summary`).
 - Colors/spacing via `:root` CSS variables in `public/assets/css/styles.css`.
 - Semantic HTML: `main`, `article`, `section`, `nav`, `footer`. Heading order `h1 → h2 → h3`.
+ - Design direction: Apple‑like minimalism — calm typography, generous whitespace, soft depth (subtle shadows), and smooth, unobtrusive motion. Favor physics‑based easing (e.g., ease-in-out, 200–250ms). Respect reduced‑motion preferences.
 
 Search
 - Build time: generate `/assets/data/search.json` from posts and the About page.

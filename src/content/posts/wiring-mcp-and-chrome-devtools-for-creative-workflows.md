@@ -1,55 +1,54 @@
 ---
 title: Wiring MCP and Chrome DevTools for Creative Workflows
-description: A day of high‑leverage setup — connecting MCP in Codex CLI, enabling the Chrome DevTools MCP, and automating social + research flows with n8n to accelerate creative work.
+description: "High‑leverage setup day: I connected MCP in Codex CLI, brought the Chrome DevTools MCP online, and stitched small automations with n8n so daily creative work feels lighter and faster."
 type: Field note
 date: 2025-10-21
-summary: Connected MCP and Chrome DevTools inside Codex, automated X posting and research capture with n8n, and reflected on planning and tool choice heuristics.
+summary: Wired MCP + Chrome DevTools in Codex, automated X posting and research capture with n8n, and noted a few rules for choosing tools without overthinking.
 tags: [mcp, chrome-devtools, n8n, productivity, workflow]
 ---
 
-I had one of those compounding setup days where infrastructure unlocks future speed. I wired up MCP in Codex CLI, enabled the Chrome DevTools MCP, and shipped small automations that I’ll reuse daily.
+Some days feel like lifting a heavy door off its hinges; today was one. I set up MCP in Codex CLI, brought the Chrome DevTools MCP online, and glued together small n8n flows so the “busywork” parts of creating show up with less weight.
 
-## Context
+## Why I did this
 
-I’m studying interaction design (BJTU × Lancaster) and building a practice around creative systems. Today’s focus was tuning the toolchain that supports research, note capture, and publishing.
+I’m studying interaction design (BJTU × Lancaster) and building a practice around creative systems. My notes, videos, and posts move faster when the tools hum in the background.
 
-## Highlights
+## What clicked today
 
-- MCP inside Codex CLI. After configuring MCP providers, Codex can reach local/remote tools with stable interfaces.
-- Chrome DevTools MCP online. With the DevTools MCP, I can introspect and control the browser directly from the terminal—perfect for repeatable, scriptable checks.
-- n8n automations. A minimal flow publishes X posts on a schedule and pipelines videos into a notes workspace for summarization.
-- Video assignment shipped. Edited and exported with ScreenStudio + CapCut, then submitted once the portal opened.
+- MCP in Codex CLI: once providers are configured, Codex reaches local/remote tools through stable interfaces. Less context juggling, more doing.
+- Chrome DevTools MCP: terminal control over the browser makes repeatable checks feel like second nature.
+- n8n helpers: a tiny flow for X posts; another that funnels videos into a notes workspace for quick summaries.
+- A small win: I wrapped a video assignment (ScreenStudio + CapCut) and actually felt good about the pace.
 
-## Setup notes
+## Notes to future me
 
-- Treat prompts as evolving APIs; write them like function contracts.
-- Prefer up‑to‑date, well‑maintained tools (DevTools MCP > older browser automation).
-- Videos beat long text for learning tools when click paths matter.
+- Write prompts like function contracts. They’re living APIs, not one‑offs.
+- Use the tool that’s still moving. DevTools MCP beats older browser automation now.
+- When click paths matter, learn from short videos; they carry the “feel” that docs miss.
 
-### Quick pointers
+### Pointers
 
 - Chrome DevTools MCP: https://github.com/ChromeDevTools/chrome-devtools-mcp
-- Context/Docs MCPs are great for pulling current docs into the loop when coding.
+- Context/Docs MCPs are great for pulling current docs when coding.
 
-## Micro‑automations built
+## Tiny automations shipped
 
-- X posting: templated messages + schedule via n8n.
-- Research capture: download videos → route to NotebookLM (or alt) for summarization and rapid review.
+- X posting: templates + schedule in n8n.
+- Research capture: auto‑download → summarize in NotebookLM (or similar) → stash for review.
 
 ## What worked
 
-1) Plan the day with SMART blocks and break tasks smaller than they feel.  
-2) Short naps keep the afternoon sharp.  
-3) Stack tiny wins; momentum compounds.
+1) Plan the day with clear blocks; make tasks smaller than they feel.
+2) A short nap resets the afternoon.
+3) Stack little wins; they add up.
 
-## Improvements
+## Could be better
 
-- Tighten proxy rules; some sites don’t need the proxy path.
-- Decide on a dedicated VPS for self‑hosted services with fewer limits than free tiers.
+- Proxy rules need trimming; not every site needs it.
+- A small VPS would remove the friction I keep hitting on free tiers.
 
 ## Next
 
-- Extend DevTools MCP scripts for repeat QA and data collection.  
-- Formalize an “Agent IDE” setup where terminal chat and a code model co‑operate in parallel.  
-- Continue integrating diary → summary → publish loops.
-
+- Expand DevTools MCP scripts for QA/data collection.
+- Formalize an “Agent IDE” where the terminal chat and a code model work in parallel.
+- Keep the diary → summary → publish loop alive.

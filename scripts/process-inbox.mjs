@@ -69,6 +69,7 @@ async function main() {
 
   let movedAny = false;
   for (const [baseKey, files] of groups.entries()) {
+    if (baseKey.includes('favicon')) continue; // exclude favicon-like files from gallery
     // Determine date from earliest birthtime among grouped files
     const stats = await Promise.all(files.map(async (name) => {
       const p = path.join(inboxDir, name);
@@ -158,6 +159,7 @@ async function main() {
     }
     const rebuilt = [];
     for (const [base, names] of byBase.entries()) {
+      if (base.toLowerCase().includes('favicon')) continue;
       const datePart = base.slice(0, 10);
       const captionSlug = base.length > 11 ? base.slice(11) : base;
       const caption = captionSlug.replace(/[-_]+/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase());
