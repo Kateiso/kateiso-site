@@ -41,6 +41,11 @@ function formatDate(d) {
 async function main() {
   await ensureDir(destDir);
   await ensureDir(dataDir);
+  let existing = [];
+  try {
+    const prev = JSON.parse(await fsp.readFile(manifestPath, 'utf8'));
+    existing = Array.isArray(prev.items) ? prev.items : [];
+  } catch {}
   const items = [];
 
   if (!fs.existsSync(inboxDir)) {
@@ -62,6 +67,7 @@ async function main() {
     groups.set(key, arr);
   }
 
+  let movedAny = false;
   for (const [baseKey, files] of groups.entries()) {
     // Determine date from earliest birthtime among grouped files
     const stats = await Promise.all(files.map(async (name) => {
@@ -122,11 +128,48 @@ async function main() {
       image: destImage.replace(/^\/public/, ''),
       video: destVideo ? destVideo.replace(/^\/public/, '') : undefined,
     });
+    movedAny = true;
   }
 
-  // Sort newest first
-  items.sort((a, b) => (a.date < b.date ? 1 : -1));
-  await fsp.writeFile(manifestPath, JSON.stringify({ items }, null, 2));
+  if (movedAny) {
+    // Merge with existing and de-duplicate by image path
+    const merged = [...items, ...existing];
+    const seen = new Set();
+    const dedup = merged.filter((it) => {
+      const key = (it.image || '') + '|' + (it.video || '');
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+    dedup.sort((a, b) => (a.date < b.date ? 1 : -1));
+    await fsp.writeFile(manifestPath, JSON.stringify({ items: dedup }, null, 2));
+  } else if (existing.length === 0) {
+    // Fallback: rebuild manifest from files already in the gallery directory
+    const files = await fsp.readdir(destDir, { withFileTypes: true });
+    const byBase = new Map();
+    for (const ent of files) {
+      if (!ent.isFile()) continue;
+      const ext = path.extname(ent.name).toLowerCase();
+      if (!IMAGE_EXTS.has(ext) && !VIDEO_EXTS.has(ext)) continue;
+      const base = path.basename(ent.name, ext);
+      const arr = byBase.get(base) || [];
+      arr.push(ent.name);
+      byBase.set(base, arr);
+    }
+    const rebuilt = [];
+    for (const [base, names] of byBase.entries()) {
+      const datePart = base.slice(0, 10);
+      const captionSlug = base.length > 11 ? base.slice(11) : base;
+      const caption = captionSlug.replace(/[-_]+/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase());
+      const imageName = names.find((n) => IMAGE_EXTS.has(path.extname(n).toLowerCase()));
+      const videoName = names.find((n) => VIDEO_EXTS.has(path.extname(n).toLowerCase()));
+      const image = imageName ? `/assets/media/gallery/${imageName}` : '';
+      const video = videoName ? `/assets/media/gallery/${videoName}` : undefined;
+      rebuilt.push({ date: datePart, title: caption, image, video });
+    }
+    rebuilt.sort((a, b) => (a.date < b.date ? 1 : -1));
+    await fsp.writeFile(manifestPath, JSON.stringify({ items: rebuilt }, null, 2));
+  }
 
   // Also process Markdown posts dropped into inbox
   await processInboxPosts();
