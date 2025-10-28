@@ -1,95 +1,134 @@
-# AGENTS — Authoring and Maintenance Guide (Astro SSG)
 
-Important: Agents must write in English. Include concise, actionable steps.
+Purpose
 
-Scope
-- Applies to the entire `kateiso-site/` repository. This guide defines the authoring model, structure, styling, and safe upgrade practices using Astro (static site generation).
+- This file instructs AI agents and contributors on how to maintain and extend the site safely.
+- Important: Agents must write in English. Keep instructions concise and actionable.
 
-Goals
-- Keep current URLs stable: `/index.html`, `/blog/index.html`, `/blog/posts/<slug>.html`.
-- Author posts in Markdown with frontmatter. Generate listings, RSS, sitemap, and a lightweight search index at build time.
+  Scope
 
-Stack
-- Astro (static), Node.js ≥ 18
-- Integrations: `@astrojs/sitemap` for sitemap, `@astrojs/rss` for RSS
-- Search: build-time JSON at `/assets/data/search.json` consumed by client JS on the blog index
-- Deploy: GitHub Pages; site URL `https://kateiso.dev`
+- Repository: kateiso-site/
+- Stack: Astro (static SSG), Node ≥ 18
+- URL policy: Keep file-format URLs and stable routes:
+  - Home: /index.html
+  - About: /about.html
+  - Photos: /photos.html
+  - Blog index: /blog.html
+  - Post pages: /blog/posts/`<slug>`.html
 
-Media Inbox Workflow
-- Drop photos (and Apple Live Photo pairs) into the repo `inbox/` folder. Supported: `.jpg/.jpeg/.png/.webp/.heic` and optional paired `.mov`.
-- On `npm run media:inbox` or during `npm run build` (via `prebuild`), files are moved to `public/assets/media/gallery/` and a manifest is written to `public/assets/data/gallery.json`.
-- Date labeling uses EXIF capture time when available; falls back to file creation time (birthtime) if EXIF is missing.
-- Live Photos: when an image and a `.mov` share the same base filename, they are paired; the gallery uses the image as poster and can show the motion clip (muted) when supported.
-- Captions: the original filename (without extension) is treated as the photo caption and displayed on the site.
+  Core Commands
 
-Inbox Posts (Markdown → Content collection)
-- You can drop Markdown posts into `inbox/` or `inbox/posts/` using the template at `templates/post.md`.
-- On `npm run media:inbox` (pre-build), valid posts are moved to `src/content/posts/<slug>.md` (slug from filename). The frontmatter is preserved.
-- Required frontmatter: `title`, `description`, `type`, `date` (ISO), `summary`, `tags` (array). Images should live in `public/assets/media/posts/<slug>/`.
+- Develop: npm run dev
+- One-time media/post intake: npm run media:inbox
+- Build: npm run build
+- Preview: npm run preview
+- The prebuild hook runs npm run media:inbox automatically.
 
-Project Layout
-- `src/layouts/Base.astro` — shared layout and metadata
-- `src/layouts/PostLayout.astro` — article layout
-- `src/pages/index.astro` — Home
-- `src/pages/about.astro` — About page (included in search)
-- `src/pages/blog/index.astro` — Blog index with search
-- `src/pages/blog/posts/[slug].astro` — Post route (generated from content collection)
-- `src/pages/assets/data/search.json.ts` — Search index endpoint (static JSON)
-- `src/pages/rss.xml.ts` — RSS feed endpoint
-- `src/content/` — Markdown posts and content config
-- `public/assets/` — CSS, JS, media (mirrors current `assets/`)
-- `public/CNAME` — `kateiso.dev`
+  Authoring — Posts (Markdown)
 
-URL Strategy
-- `trailingSlash: "never"` and `build.format: "file"` ensure `.html` output.
-- Post links resolve to `/blog/posts/<slug>.html`.
+- Location: src/content/posts/*.md
+- Required frontmatter (date is coerced; YAML unquoted dates are OK):
+  - title: string (≤60; page title suffix “ · Kateiso” is automatic)
+  - description: string (140–160 chars)
+  - type: string (e.g., Essay | Note | Case | Lab | Guide | Field note | Toolkit)
+  - date: 2025-10-27 (coerced to Date by schema)
+  - summary: string
+  - tags: [string, ...]
+  - cover: assets/media/posts/`<slug>`/cover.webp (optional)
+- Images for posts live under public/assets/media/posts/`<slug>`/.
+- Search JSON serializes dates to ISO strings; don’t change the shape:
+  - Endpoint: /assets/data/search.json
+  - Includes posts and About page.
 
-Authoring (Markdown)
-1) Create `src/content/posts/<slug>.md` (slug: lowercase words joined by hyphens).
-2) Frontmatter fields:
-   - `title`: string (≤ 60; used in `<title>` suffix as ` · Kateiso`)
-   - `description`: 140–160 chars
-   - `type`: `Essay|Note|Case|Lab|Guide|Field note|Toolkit`
-   - `date`: ISO (e.g., `2025-10-12`)
-   - `summary`: short paragraph for cards
-   - `cover`: `assets/media/posts/<slug>/cover.webp` (optional)
-   - `tags`: string[]
-3) Images live in `public/assets/media/posts/<slug>/` with proper `alt`.
+  Authoring — Inbox Workflows
 
-Styling and Semantics
-- BEM class names (e.g., `site-header__inner`, `journal-card__summary`).
-- Colors/spacing via `:root` CSS variables in `public/assets/css/styles.css`.
-- Semantic HTML: `main`, `article`, `section`, `nav`, `footer`. Heading order `h1 → h2 → h3`.
- - Design direction: Apple‑like minimalism — calm typography, generous whitespace, soft depth (subtle shadows), and smooth, unobtrusive motion. Favor physics‑based easing (e.g., ease-in-out, 200–250ms). Respect reduced‑motion preferences.
+- Photos intake (single shared manifest):
+  - Drop photos (and optional Live Photo videos) into inbox/. Supported:
+    - Images: .jpg .jpeg .png .webp .heic
+    - Live Photo video: .mov (same base filename as image)
+  - Run npm run media:inbox (or rely on prebuild):
+    - Moves files to public/assets/media/gallery/ with YYYY-MM-DD_`<slug>`.`<ext>` names.
+    - Captions come from the original filename (without extension) and must display on
+      site.
+    - Dates come from EXIF capture time (preferred) or file creation time (fallback).
+    - Pairs Live Photos automatically (image as poster + muted video).
+    - Writes/updates manifest: public/assets/data/gallery.json.
+    - If no inbox items: preserves existing manifest; if missing, rebuilds from the gallery
+      folder.
+  - Do not push an empty manifest unless intended.
+- Posts intake:
+  - Template: templates/post.md
+  - Drop a filled .md into inbox/ or inbox/posts/.
+  - The script moves valid posts to src/content/posts/`<slug>`.md (slug from filename).
 
-Search
-- Build time: generate `/assets/data/search.json` from posts and the About page.
-- Client: blog index ships a small script to filter cards. Fallback shows all when JS is disabled.
+  Pages and Components
 
-SEO
-- Each page sets unique `<title>` and `<meta name="description">`.
-- Sitemap via `@astrojs/sitemap`. RSS via `@astrojs/rss` at `/rss.xml`.
+- Home (src/pages/index.astro)
+  - Subtle hero (not “PPT cover”).
+  - “Recent moments” gallery shows latest items from the shared manifest.
+- Photos (src/pages/photos.astro)
+  - Uses the same manifest as Home.
+  - Masonry-style listing with larger media, no white borders.
+  - Featured large item at top with prev/next.
+  - Lightbox with keyboard navigation:
+    - ESC closes; Left/Right navigate.
+    - When lightbox is closed, Left/Right cycle the featured item.
+  - Year filter via ?year=YYYY.
+- Blog index (src/pages/blog/index.astro)
+  - Renders posts from content collection; includes a client-side search field.
+- Post pages (src/pages/blog/posts/[slug].astro)
+  - Generated from the content collection via frontmatter.
 
-Analytics
-- Plausible snippet is included and deferred for `kateiso.dev`. Replace with GA4 if preferred (see Base layout comment).
+    Design direction: Apple-like minimalism — calm typography, generous whitespace, soft depth, smooth motion, and 	respect for reduced motion.”
 
-Branches and Commits
-- Branches: `feature/post-<slug>`, `chore/style-tuning`.
-- Messages: `post: <slug> + listings`, `style: tune spacing/contrast`, `content: update about/focus`.
+- Shared layout: src/layouts/Base.astro (nav/footer, analytics, fonts, styles).
+- Global CSS: public/assets/css/styles.css
+  - Use CSS variables in :root for color/spacing/width.
+  - BEM classes (e.g., block__element--modifier).
+- Page-only tweaks:
+  - Prefer scoped `<style>` blocks in the .astro page to avoid global impact.
+- Navigation links:
+  - Use .html for top-level pages (e.g., /about.html, /photos.html, /blog.html).
+  - Keep post links as /blog/posts/`<slug>`.html.
 
-Avoid
-- Changing `public/assets/` hierarchy or the blog route structure.
-- Large uncompressed images; missing `alt`.
-- Blocking third-party scripts.
+  Data and Integrations
 
-Upgrade Path
-- Add tags page, pagination, and RSS enhancements.
-- Optional analytics switch (GA4) and feed/OG enrichment.
+- Sitemap: @astrojs/sitemap, site = https://kateiso.dev
+- RSS: /rss.xml via @astrojs/rss
+- Analytics: Plausible (deferred). GA4 can replace it if provided a Measurement ID.
 
-Home Gallery
-- The home page renders a “Recent moments” gallery from `/assets/data/gallery.json` (recent 9 items). Titles derive from filenames; keep base names human-readable.
-- Visuals are minimal and artistic; images live under `public/assets/media/gallery/`.
+  Deployment
 
-Photos Page and Filters
-- `/photos/` lists all items from the same manifest with year filters (query `?year=YYYY`).
-- Clicking a photo opens a lightbox for zoom; videos (Live Photos) can autoplay muted inside the lightbox.
+- GitHub Pages via .github/workflows/pages.yml.
+- Push to main triggers build and deploy.
+- CNAME: public/CNAME contains kateiso.dev.
+
+  Editing Guidance
+
+- Minor copy/structure changes: edit specific .astro page (e.g., src/pages/about.astro).
+- Page-only style changes: add a scoped `<style>` in the same .astro file.
+- Global adjustments (site-wide): edit public/assets/css/styles.css vars and class rules.
+- Do not move or rename:
+  - public/assets/ structure
+  - src/pages/blog/posts/[slug].astro
+  - The blog/posts directory or /blog.html route
+- Do not introduce blocking third-party scripts.
+
+  Quality Checklist (pre-push)
+
+- Top-level links use .html (no trailing slash).
+- Build passes locally: npm run build
+- New media processed: npm run media:inbox (if you added photos/posts to inbox)
+- Each page has unique `<title>` and `<meta name="description">`.
+- Dates serialized to ISO in /assets/data/search.json.
+
+  Commit/Branch
+
+- Branches:
+  - Features: feature/`<short-scope>`
+  - Posts: feature/post-`<slug>`
+  - Style: chore/style-tuning
+- Messages:
+  - post: `<slug>` + listings
+  - feat(photos): ...
+  - fix(routes): use .html links for top-level pages
+  - fix(content): coerce post dates to Date and serialize dates in search JSON
