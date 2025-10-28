@@ -16,7 +16,7 @@ const activeYear = url.searchParams.get('year');
 const filtered = activeYear ? items.filter((i) => (i.date || '').startsWith(activeYear)) : items;
 ---
 <Base title={pageTitle} description={pageDesc}>
-  <section class="section">
+  <section class="section photos-page">
     <div class="section__intro section__intro--split">
       <div>
         <h1>Photos</h1>
@@ -28,10 +28,31 @@ const filtered = activeYear ? items.filter((i) => (i.date || '').startsWith(acti
       </nav>
     </div>
 
-    <div class="gallery-grid" id="gallery">
+    <!-- Featured large media -->
+    {filtered.length > 0 && (
+      <section class="photos-featured" aria-label="Featured photo">
+        <div class="photos-featured__inner">
+          {filtered[0].video ? (
+            <video class="photos-featured__media" src={filtered[0].video} poster={filtered[0].image} muted playsinline controls preload="metadata"></video>
+          ) : (
+            <img class="photos-featured__media" src={filtered[0].image} alt={filtered[0].title} />
+          )}
+          <div class="photos-featured__meta">
+            <span class="photos-featured__date">{filtered[0].date}</span>
+            <span aria-hidden="true">·</span>
+            <span class="photos-featured__title">{filtered[0].title}</span>
+            <button class="photos-featured__open" data-index="0" aria-label="Open in lightbox">Open</button>
+          </div>
+          <button class="photos-featured__nav photos-featured__nav--prev" aria-label="Previous">‹</button>
+          <button class="photos-featured__nav photos-featured__nav--next" aria-label="Next">›</button>
+        </div>
+      </section>
+    )}
+
+    <div class="gallery-grid gallery--masonry" id="gallery">
       {filtered.map((it) => (
         <figure class="gallery-item">
-          <button class="gallery-item__btn" data-image={it.image} data-video={it.video || ''} data-title={it.title} data-date={it.date} aria-label={`Open ${it.title}`}>
+          <button class="gallery-item__btn" data-image={it.image} data-video={it.video || ''} data-title={it.title} data-date={it.date} aria-label={`Open ${it.title}`} data-index={filtered.indexOf(it)}>
             {it.video ? (
               <video class="gallery-item__media" src={it.video} poster={it.image} muted playsinline preload="metadata" loop></video>
             ) : (
@@ -55,6 +76,8 @@ const filtered = activeYear ? items.filter((i) => (i.date || '').startsWith(acti
         <div id="lightbox-media"></div>
         <figcaption class="lightbox__caption"><span id="lightbox-date"></span> · <span id="lightbox-title"></span></figcaption>
       </figure>
+      <button class="lightbox__nav lightbox__nav--prev" aria-label="Previous">‹</button>
+      <button class="lightbox__nav lightbox__nav--next" aria-label="Next">›</button>
       <button class="lightbox__close" data-action="close" aria-label="Close">✕</button>
     </div>
   </div>
@@ -64,31 +87,49 @@ const filtered = activeYear ? items.filter((i) => (i.date || '').startsWith(acti
     const media = document.getElementById('lightbox-media');
     const title = document.getElementById('lightbox-title');
     const date = document.getElementById('lightbox-date');
+    const items = JSON.parse(document.getElementById('photos-data')?.textContent || '[]');
+    let currentIndex = 0;
+
+    function renderLightbox(idx) {
+      const it = items[idx];
+      if (!it) return;
+      title.textContent = it.title || '';
+      date.textContent = it.date || '';
+      media.innerHTML = '';
+      if (it.video) {
+        const v = document.createElement('video');
+        v.src = it.video;
+        v.poster = it.image || '';
+        v.controls = true;
+        v.autoplay = true;
+        v.playsInline = true;
+        media.appendChild(v);
+      } else if (it.image) {
+        const i = document.createElement('img');
+        i.src = it.image;
+        i.alt = title.textContent || '';
+        media.appendChild(i);
+      }
+    }
+
+    function openAt(idx) {
+      currentIndex = (idx + items.length) % items.length;
+      renderLightbox(currentIndex);
+      lb.hidden = false;
+      document.body.style.overflow = 'hidden';
+    }
+
     document.querySelectorAll('.gallery-item__btn').forEach((btn) => {
       btn.addEventListener('click', () => {
-        const img = btn.getAttribute('data-image');
-        const vid = btn.getAttribute('data-video');
-        title.textContent = btn.getAttribute('data-title') || '';
-        date.textContent = btn.getAttribute('data-date') || '';
-        media.innerHTML = '';
-        if (vid) {
-          const v = document.createElement('video');
-          v.src = vid;
-          v.poster = img || '';
-          v.controls = true;
-          v.autoplay = true;
-          v.playsInline = true;
-          media.appendChild(v);
-        } else if (img) {
-          const i = document.createElement('img');
-          i.src = img;
-          i.alt = title.textContent || '';
-          media.appendChild(i);
-        }
-        lb.hidden = false;
-        document.body.style.overflow = 'hidden';
+        const idx = Number(btn.getAttribute('data-index') || '0');
+        openAt(idx);
       });
     });
+
+    document.querySelector('.photos-featured__open')?.addEventListener('click', () => openAt(0));
+    document.querySelector('.photos-featured__nav--prev')?.addEventListener('click', () => switchFeatured(-1));
+    document.querySelector('.photos-featured__nav--next')?.addEventListener('click', () => switchFeatured(1));
+
     lb.addEventListener('click', (e) => {
       if ((e.target).dataset?.action === 'close') {
         lb.hidden = true;
@@ -97,13 +138,41 @@ const filtered = activeYear ? items.filter((i) => (i.date || '').startsWith(acti
         if (v) v.pause();
       }
     });
+    document.querySelector('.lightbox__nav--prev')?.addEventListener('click', () => { openAt(currentIndex - 1); });
+    document.querySelector('.lightbox__nav--next')?.addEventListener('click', () => { openAt(currentIndex + 1); });
+
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && !lb.hidden) {
         lb.hidden = true;
         document.body.style.overflow = '';
         const v = media.querySelector('video');
         if (v) v.pause();
+        return;
+      }
+      if (e.key === 'ArrowLeft') {
+        if (!lb.hidden) openAt(currentIndex - 1); else switchFeatured(-1);
+      } else if (e.key === 'ArrowRight') {
+        if (!lb.hidden) openAt(currentIndex + 1); else switchFeatured(1);
       }
     });
+
+    function switchFeatured(delta) {
+      if (!items.length) return;
+      currentIndex = (currentIndex + delta + items.length) % items.length;
+      const it = items[currentIndex];
+      const container = document.querySelector('.photos-featured__inner');
+      if (!container) return;
+      const mediaWrap = container.querySelector('.photos-featured__media');
+      if (mediaWrap) mediaWrap.remove();
+      const meta = container.querySelector('.photos-featured__meta');
+      if (meta) {
+        meta.querySelector('.photos-featured__date').textContent = it.date || '';
+        meta.querySelector('.photos-featured__title').textContent = it.title || '';
+      }
+      const node = it.video ? Object.assign(document.createElement('video'), { src: it.video, poster: it.image || '', controls: true, playsInline: true }) : Object.assign(document.createElement('img'), { src: it.image, alt: it.title || '' });
+      node.className = 'photos-featured__media';
+      container.prepend(node);
+    }
   </script>
+  <script type="application/json" id="photos-data">{JSON.stringify(filtered)}</script>
 </Base>
