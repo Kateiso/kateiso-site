@@ -38,13 +38,17 @@ function formatDate(d) {
   return `${y}-${m}-${day}`;
 }
 
+function sanitizeItems(list) {
+  return list.filter((it) => it.image && !it.image.toLowerCase().includes('favicon'));
+}
+
 async function main() {
   await ensureDir(destDir);
   await ensureDir(dataDir);
   let existing = [];
   try {
     const prev = JSON.parse(await fsp.readFile(manifestPath, 'utf8'));
-    existing = Array.isArray(prev.items) ? prev.items : [];
+    existing = Array.isArray(prev.items) ? sanitizeItems(prev.items) : [];
   } catch {}
   const items = [];
 
@@ -143,7 +147,7 @@ async function main() {
       return true;
     });
     dedup.sort((a, b) => (a.date < b.date ? 1 : -1));
-    await fsp.writeFile(manifestPath, JSON.stringify({ items: dedup }, null, 2));
+    await fsp.writeFile(manifestPath, JSON.stringify({ items: sanitizeItems(dedup) }, null, 2));
   } else if (existing.length === 0) {
     // Fallback: rebuild manifest from files already in the gallery directory
     const files = await fsp.readdir(destDir, { withFileTypes: true });
@@ -170,7 +174,9 @@ async function main() {
       rebuilt.push({ date: datePart, title: caption, image, video });
     }
     rebuilt.sort((a, b) => (a.date < b.date ? 1 : -1));
-    await fsp.writeFile(manifestPath, JSON.stringify({ items: rebuilt }, null, 2));
+    await fsp.writeFile(manifestPath, JSON.stringify({ items: sanitizeItems(rebuilt) }, null, 2));
+  } else {
+    await fsp.writeFile(manifestPath, JSON.stringify({ items: sanitizeItems(existing) }, null, 2));
   }
 
   // Also process Markdown posts dropped into inbox
