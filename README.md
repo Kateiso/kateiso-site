@@ -83,8 +83,10 @@
 
 ## 发布（GitHub Pages）
 
-- 推送后由 GitHub Actions 构建并部署（工作流将随后添加或按需启用）
-- 需要 `public/CNAME`（内容 `kateiso.dev`）
+- 构建产物会输出到 `docs/`。发布前执行 `npm run build` 并把 `docs/` 一并提交。
+- 在仓库 Settings → Pages 中选择 `Deploy from a branch`，并将 Source 设为 `main` / `docs`，即可直接展示 `docs/index.html`。
+- 如果希望使用 CI，可切换到 `GitHub Actions` 模式并沿用 `.github/workflows/pages.yml`。
+- 需要 `public/CNAME`（内容 `kateiso.dev`）。
 
 ## 规范
 
