@@ -1,34 +1,29 @@
 ---
-import Base from "../../src/layouts/Base.astro";
+import Base from "../../../src/layouts/Base.astro";
 import fs from 'node:fs/promises';
 import { getCollection } from 'astro:content';
-const pageTitle = 'Kateiso · AI into XR & 餐饮数字化记录';
-const pageDesc = '定居宁波，在威海攻读 Lancaster × 北京交通大学双学位，专注 AI into XR 与餐饮数字化。';
+const pageTitle = 'Kateiso · AI into XR & Hospitality Ops';
+const pageDesc = 'Based in Ningbo, studying in Weihai via the Lancaster × BJTU dual degree, translating AI thinking into XR rehearsals and restaurant systems.';
 let gallery = [] as any[];
 try {
   const raw = await fs.readFile('public/assets/data/gallery.json', 'utf8');
   const json = JSON.parse(raw);
   gallery = (json.items || []).slice(0, 6);
 } catch {}
-const posts = (await getCollection('posts')).sort((a,b) => (a.data.date < b.data.date ? 1 : -1)).slice(0, 3);
+const postsEn = await getCollection('postsEn');
+const fallback = postsEn.length === 0;
+const postsSource = fallback ? await getCollection('posts') : postsEn;
+const posts = postsSource.sort((a,b) => (a.data.date < b.data.date ? 1 : -1)).slice(0, 3);
 const portrait = '/assets/media/gallery/2025-05-23-vison-pro-at-jinan.jpeg';
 const timeline = [
-  { year: '2025', detail: 'Human AI Co-Memory 毕设进行中，聚焦 AI 在 XR 彩排中的垂直应用。' },
-  { year: '2024', detail: '把餐饮数字化定为长期课题，TasteOS 与多家门店一起跑数据。' },
-  { year: '2022', detail: '进入北京交通大学并加入 Lancaster 联合培养项目，主修信息管理。' },
-  { year: '2003', detail: '出生于宁波，习惯把海风的节奏记下来。' }
+  { year: '2025', detail: 'Human AI Co-Memory thesis focusing on vertical AI inside XR rehearsals.' },
+  { year: '2024', detail: 'Pursued hospitality digitisation full time, launching TasteOS pilots with restaurants.' },
+  { year: '2022', detail: 'Joined Beijing Jiaotong University and the Lancaster dual-degree track (Information Management).' },
+  { year: '2003', detail: 'Born in Ningbo, a coastal city that taught me to respect tempo.' }
 ];
 const focusAreas = [
-  {
-    title: 'AI into XR',
-    summary: 'AI 在 XR 场景下的垂直应用：Feel / Frame / Flow 仪式、体感评分、共记忆脚本。',
-    link: '/projects.html'
-  },
-  {
-    title: 'AI into 餐饮',
-    summary: '做 AI 技术（LLM、Agent）在餐饮领域的垂直应用，把补货、排班与体验分串起来。',
-    link: '/projects.html'
-  }
+  { title: 'AI into XR', summary: 'Vertical AI applications for XR—Feel/Frame/Flow rituals, motion scoring, empathy meters.', link: '/en/projects.html' },
+  { title: 'AI into dining', summary: 'LLM + agent workflows for restaurants, bridging supply, prep, and guest feedback.', link: '/en/projects.html' }
 ];
 const socials = [
   { name: 'Email', icon: '/assets/icons/mail.svg', href: 'mailto:C.yibo2@gmail.com' },
@@ -38,44 +33,44 @@ const socials = [
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebPage',
-  name: 'Kateiso',
+  name: 'Kateiso · EN',
   description: pageDesc,
-  inLanguage: 'zh-Hans',
-  url: 'https://kateiso.dev/index.html'
+  inLanguage: 'en',
+  url: 'https://kateiso.dev/en/index.html'
 };
 ---
 <Base
   title={pageTitle}
   description={pageDesc}
-  lang="zh-Hans"
-  canonical="/index.html"
-  alternates={[{ href: '/en/index.html', hrefLang: 'en' }]}
-  languageToggle={{ href: '/en/index.html', label: 'EN', ariaLabel: 'View English home' }}
+  lang="en"
+  canonical="/en/index.html"
+  alternates={[{ href: '/index.html', hrefLang: 'zh-Hans' }]}
+  languageToggle={{ href: '/index.html', label: '中文', ariaLabel: '查看中文首页' }}
   jsonLd={jsonLd}
 >
   <section class="hero hero--profile" id="top">
     <div class="hero__portrait">
-      <img src={portrait} alt="Kateiso" loading="lazy" />
+      <img src={portrait} alt="Kateiso portrait" loading="lazy" />
     </div>
     <div class="hero__content">
       <p class="hero__kicker">Ningbo Base · Weihai Campus</p>
       <h1>Kateiso</h1>
-      <p class="hero__subtitle">专注 AI into XR 与餐饮数字化，期待与你链接～</p>
+      <p class="hero__subtitle">I focus on AI into XR and hospitality, hoping to link up with collaborators who enjoy living systems.</p>
       <div class="hero__actions">
-        <a class="button button--primary" href="/projects.html">项目概览</a>
-        <a class="button button--ghost" href="/research.html">研究与想法</a>
+        <a class="button button--primary" href="/en/projects.html">Projects</a>
+        <a class="button button--ghost" href="/en/contact.html">Contact</a>
       </div>
       <ul class="hero__facts">
-        <li>宁波为家，在威海求学</li>
-        <li>Lancaster × BJTU 双学位 | XR & Ops</li>
-        <li>邮箱 <a href="mailto:C.yibo2@gmail.com">C.yibo2@gmail.com</a></li>
+        <li>Base: Ningbo · study in Weihai</li>
+        <li>Dual degree · Lancaster University & BJTU</li>
+        <li>Email <a href="mailto:C.yibo2@gmail.com">C.yibo2@gmail.com</a></li>
       </ul>
     </div>
   </section>
 
   <section class="section" id="timeline">
     <div class="section__intro">
-      <h2>节点记录</h2>
+      <h2>Timeline</h2>
     </div>
     <div class="timeline">
       {timeline.map((item) => (
@@ -89,7 +84,7 @@ const jsonLd = {
 
   <section class="section" id="focus">
     <div class="section__intro">
-      <h2>目前关注</h2>
+      <h2>Focus areas</h2>
     </div>
     <div class="highlight-grid">
       {focusAreas.map((item) => (
@@ -105,10 +100,10 @@ const jsonLd = {
     <section class="section" id="moments">
       <div class="section__intro section__intro--split">
         <div>
-          <h2>近期瞬间</h2>
-          <p class="section__lede">用共享 manifest 记录生活与创作。</p>
+          <h2>Recent visuals</h2>
+          <p class="section__lede">Shared gallery from the Chinese hub.</p>
         </div>
-        <a class="section__link" href="/photos.html">进入相册 →</a>
+        <a class="section__link" href="/photos.html">Explore gallery →</a>
       </div>
       <div class="gallery-grid home-gallery">
         {gallery.map((it) => (
@@ -132,16 +127,21 @@ const jsonLd = {
   <section class="section section--alt" id="journal">
     <div class="section__intro section__intro--split">
       <div>
-        <h2>最新日志</h2>
-        <p class="section__lede">记录实验、研究与日常思考。</p>
+        <h2>Journal picks</h2>
+        <p class="section__lede">Notes on experiments, research, and operations.</p>
       </div>
-      <a class="section__link" href="/blog.html">查看全部 →</a>
+      <a class="section__link" href="/en/blog.html">Visit blog →</a>
     </div>
+    {fallback && (
+      <p class="notice" style="margin-bottom:var(--spacing-md);color:var(--color-text-muted);">
+        English stories are coming soon. Showing Chinese ones meanwhile.
+      </p>
+    )}
     <div class="journal-grid">
       {posts.map((post) => (
         <article class="journal-card">
-          <p class="journal-card__meta">{new Date(post.data.date).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long' })} · {post.data.type}</p>
-          <h3><a href={`/blog/posts/${post.slug}.html`}>{post.data.title}</a></h3>
+          <p class="journal-card__meta">{new Date(post.data.date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })} · {post.data.type}</p>
+          <h3><a href={fallback ? `/blog/posts/${post.slug}.html` : `/en/blog/posts/${post.slug}.html`}>{post.data.title}</a></h3>
           <p class="journal-card__summary">{post.data.summary}</p>
         </article>
       ))}
@@ -150,14 +150,14 @@ const jsonLd = {
 
   <section class="section" id="cta">
     <div class="contact-card">
-      <p class="contact-card__label">下一步</p>
-      <h2>一起把现实写进系统</h2>
-      <p>邮件是我最专注的沟通方式，欢迎聊 XR 排练、餐饮数字化、研究协作与演讲。</p>
+      <p class="contact-card__label">Collaborate</p>
+      <h2>Build with AI into XR & hospitality ops</h2>
+      <p>Email for pilots, co-research, talks, or system walkthroughs.</p>
       <div class="contact-card__actions">
-        <a class="button button--primary" href="mailto:C.yibo2@gmail.com">发邮件</a>
-        <a class="button button--ghost" href="/contact.html">查看更多联系方式</a>
+        <a class="button button--primary" href="mailto:C.yibo2@gmail.com">Email Kateiso</a>
+        <a class="button button--ghost" href="/en/contact.html">More contact options</a>
       </div>
-      <div class="social-links" aria-label="社交媒体">
+      <div class="social-links" aria-label="Social links">
         {socials.map((item) => (
           <a class="social-link" href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel="noopener" aria-label={item.name}>
             <img src={item.icon} alt="" aria-hidden="true" />

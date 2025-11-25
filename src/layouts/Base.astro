@@ -1,39 +1,130 @@
 ---
+interface AlternateLink {
+  href: string;
+  hrefLang: string;
+}
+interface LanguageToggleConfig {
+  href: string;
+  label: string;
+  ariaLabel?: string;
+}
 export interface Props {
   title?: string;
   description?: string;
+  lang?: string;
+  canonical?: string;
+  alternates?: AlternateLink[];
+  ogImage?: string;
+  pageType?: 'website' | 'article';
+  jsonLd?: Record<string, any> | Record<string, any>[];
+  languageToggle?: LanguageToggleConfig;
 }
-const { title = 'Kateiso', description = 'Essays, field notes, and toolkits on intelligent creative systems.' } = Astro.props as Props;
+const defaultTitle = 'Kateiso';
+const defaultDesc = '享受生活，享受与智能系统共创。记录 Kateiso 的创意系统与实践。';
+const {
+  title = defaultTitle,
+  description = defaultDesc,
+  lang = 'zh-Hans',
+  canonical,
+  alternates = [],
+  ogImage = '/favicon.jpg',
+  pageType = 'website',
+  jsonLd,
+  languageToggle,
+} = Astro.props as Props;
+const siteUrl = Astro.site ?? 'https://kateiso.dev';
+const pathname = Astro.url?.pathname ?? '/';
+const canonicalUrl = canonical ? new URL(canonical, siteUrl).toString() : new URL(pathname, siteUrl).toString();
+const resolvedOgImage = ogImage.startsWith('http') ? ogImage : new URL(ogImage, siteUrl).toString();
+const isEnglish = lang?.startsWith('en');
+const navItems = isEnglish
+  ? [
+      { href: '/en/about.html', label: 'About' },
+      { href: '/en/projects.html', label: 'Projects' },
+      { href: '/en/research.html', label: 'Research' },
+      { href: '/en/blog.html', label: 'Journal' },
+      { href: '/en/photos.html', label: 'Photos' },
+      { href: '/en/contact.html', label: 'Contact' },
+    ]
+  : [
+      { href: '/about.html', label: '关于' },
+      { href: '/projects.html', label: '项目' },
+      { href: '/research.html', label: '研究' },
+      { href: '/blog.html', label: '日志' },
+      { href: '/photos.html', label: '相册' },
+      { href: '/contact.html', label: '联系' },
+    ];
+const baseJsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: 'Kateiso',
+    url: 'https://kateiso.dev/index.html',
+    email: 'mailto:C.yibo2@gmail.com',
+    sameAs: [
+      'https://x.com/KateisoCao',
+      'https://www.douyin.com/user/MS4wLjABAAAAHCcB9BtLlZP-iSutvkW8oHPPHeSj_IR9rBa5uIq0L3drZDGzCcLmAaTFCozmXLH5?from_tab_name=main',
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Kateiso',
+    url: 'https://kateiso.dev/index.html',
+    inLanguage: lang,
+  },
+];
+const computedJsonLd = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];
+const structuredData = [...baseJsonLd, ...computedJsonLd];
 ---
 <!DOCTYPE html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={pageType} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={resolvedOgImage} />
+    <meta property="og:locale" content={lang} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={resolvedOgImage} />
+    <link rel="canonical" href={canonicalUrl} />
+    {alternates.map((link) => (
+      <link rel="alternate" hrefLang={link.hrefLang} href={new URL(link.href, siteUrl).toString()} />
+    ))}
     <link rel="stylesheet" href="/assets/css/styles.css" />
     <link rel="icon" href="/favicon.jpg" type="image/jpeg" />
-    <!-- Plausible analytics (can be swapped for GA4). Data domain: kateiso.dev -->
     <script defer data-domain="kateiso.dev" src="https://plausible.io/js/script.js"></script>
+    {structuredData.length > 0 && (
+      <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
+    )}
   </head>
   <body class={Astro.url.pathname.startsWith('/blog') ? 'with-subpage-header' : ''}>
     <header class="site-header" data-js="nav">
       <div class="site-header__inner">
-        <a class="site-logo" href="/">Kateiso</a>
+        <a class="site-logo" href={isEnglish ? '/en/index.html' : '/index.html'}>Kateiso</a>
         <nav class="site-nav" aria-label="Primary navigation">
           <button class="site-nav__toggle" type="button" aria-expanded="false" aria-controls="site-menu">
             <span class="visually-hidden">Toggle navigation</span>
             <span class="site-nav__icon" aria-hidden="true"></span>
           </button>
           <ul id="site-menu" class="site-nav__list">
-            <li><a href="/about.html">About</a></li>
-            <li><a href="/photos.html">Photos</a></li>
-            <li><a href="/blog.html">Journal</a></li>
-            <li><a href="/rss.xml">RSS</a></li>
+            {navItems.map((item) => (
+              <li><a href={item.href}>{item.label}</a></li>
+            ))}
+            {languageToggle && (
+              <li class="site-nav__lang">
+                <a href={languageToggle.href} aria-label={languageToggle.ariaLabel || languageToggle.label}>
+                  {languageToggle.label}
+                </a>
+              </li>
+            )}
           </ul>
         </nav>
       </div>
@@ -47,9 +138,11 @@ const { title = 'Kateiso', description = 'Essays, field notes, and toolkits on i
       <div class="site-footer__inner">
         <p class="site-footer__brand">© <span data-js="year"></span> Kateiso. All rights reserved.</p>
         <nav class="site-footer__nav" aria-label="Secondary navigation">
-          <a href="/blog.html">Journal</a>
+          <a href={isEnglish ? '/en/blog.html' : '/blog.html'}>{isEnglish ? 'Journal' : '日志'}</a>
           <span aria-hidden="true">·</span>
-          <a href="/about.html">About</a>
+          <a href={isEnglish ? '/en/projects.html' : '/projects.html'}>{isEnglish ? 'Projects' : '项目'}</a>
+          <span aria-hidden="true">·</span>
+          <a href={isEnglish ? '/en/contact.html' : '/contact.html'}>{isEnglish ? 'Contact' : '联系'}</a>
         </nav>
       </div>
     </footer>

@@ -1,0 +1,57 @@
+---
+import Base from "../../src/layouts/Base.astro";
+const pageTitle = '联系 · Kateiso';
+const pageDesc = '欢迎就 AI into XR、餐饮数字化、写作与演讲合作交流。';
+const channels = [
+  { label: 'Email', value: 'C.yibo2@gmail.com', href: 'mailto:C.yibo2@gmail.com' },
+  { label: 'Twitter', value: '@KateisoCao', href: 'https://x.com/KateisoCao' },
+  { label: 'Douyin', value: '@Kateiso', href: 'https://www.douyin.com/user/MS4wLjABAAAAHCcB9BtLlZP-iSutvkW8oHPPHeSj_IR9rBa5uIq0L3drZDGzCcLmAaTFCozmXLH5?from_tab_name=main' }
+];
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: pageTitle,
+  description: pageDesc,
+  inLanguage: 'zh-Hans',
+  url: 'https://kateiso.dev/contact.html'
+};
+---
+<Base
+  title={pageTitle}
+  description={pageDesc}
+  lang="zh-Hans"
+  canonical="/contact.html"
+  alternates={[{ href: '/en/contact.html', hrefLang: 'en' }]}
+  languageToggle={{ href: '/en/contact.html', label: 'EN', ariaLabel: 'View English Contact' }}
+  jsonLd={jsonLd}
+>
+  <section class="section">
+    <div class="section__intro">
+      <p class="hero__kicker">Contact</p>
+      <h1>与我合作</h1>
+      <p class="section__lede">欢迎关于 XR 排练、餐饮数字化、研究写作与演讲的对话。</p>
+    </div>
+    <div class="contact-panel">
+      <div>
+        <h2>首选渠道</h2>
+        <ul class="contact-panel__list">
+          {channels.map((ch) => (
+            <li>
+              <span>{ch.label}</span>
+              <a href={ch.href} target={ch.href.startsWith('http') ? '_blank' : undefined} rel="noopener">{ch.value}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <h2>可聊议题</h2>
+        <ul class="contact-panel__topics">
+          <li>Feel / Frame / Flow 共记忆实践</li>
+          <li>XR + AI 排练或工作坊设计</li>
+          <li>TasteOS 与餐饮运营数字化</li>
+          <li>研究/演讲合作</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</Base>

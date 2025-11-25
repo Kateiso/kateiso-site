@@ -1,0 +1,67 @@
+---
+import Base from "../../../../../src/layouts/Base.astro";
+import PostLayout from "../../../../../src/layouts/PostLayout.astro";
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const zhPosts = await getCollection('posts');
+  const enPosts = await getCollection('postsEn');
+  const zhMap = new Map(zhPosts.map((post) => [post.slug, post]));
+  const paths = new Map();
+
+  enPosts.forEach((post) => {
+    paths.set(post.slug, { post, isFallback: false, hasChinese: zhMap.has(post.slug) });
+  });
+
+  zhPosts.forEach((post) => {
+    if (!paths.has(post.slug)) {
+      paths.set(post.slug, { post, isFallback: true, hasChinese: true });
+    }
+  });
+
+  return Array.from(paths.entries()).map(([slug, payload]) => ({
+    params: { slug },
+    props: { ...payload, slug },
+  }));
+}
+
+const { post, isFallback, hasChinese, slug } = Astro.props;
+const { Content } = await post.render();
+const meta = `${post.data.type || 'Essay'} · ${new Date(post.data.date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`;
+const canonical = `/en/blog/posts/${slug}.html`;
+const alternates = hasChinese ? [{ href: `/blog/posts/${slug}.html`, hrefLang: 'zh-Hans' }] : [];
+const articleJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: post.data.title,
+  description: post.data.summary || post.data.description,
+  author: { '@type': 'Person', name: 'Kateiso' },
+  datePublished: post.data.date instanceof Date ? post.data.date.toISOString() : String(post.data.date),
+  inLanguage: isFallback ? 'zh-Hans' : 'en',
+  url: `https://kateiso.dev${canonical}`,
+};
+---
+<Base
+  title={`${post.data.title} · Kateiso`}
+  description={post.data.description}
+  lang="en"
+  canonical={canonical}
+  alternates={alternates}
+  languageToggle={hasChinese ? { href: `/blog/posts/${slug}.html`, label: '中文', ariaLabel: '查看中文版本' } : undefined}
+  pageType="article"
+  jsonLd={articleJsonLd}
+>
+  {isFallback && (
+    <div class="notice" style="max-width:var(--max-width);margin:var(--spacing-md) auto 0;padding:var(--spacing-sm);border-left:3px solid var(--color-accent);color:var(--color-text-muted);">
+      English draft is not ready yet. Showing the Chinese version for now.
+    </div>
+  )}
+  <PostLayout
+    lang={isFallback ? 'zh-Hans' : 'en'}
+    title={post.data.title}
+    description={post.data.summary || post.data.description}
+    meta={meta}
+  >
+    <Content />
+  </PostLayout>
+</Base>

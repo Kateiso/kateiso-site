@@ -5,18 +5,45 @@ import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
-  return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+  const postsEn = await getCollection('postsEn');
+  const enMap = new Map(postsEn.map((en) => [en.slug, en.slug]));
+  return posts.map((post) => ({ params: { slug: post.slug }, props: { post, englishSlug: enMap.get(post.slug) || null } }));
 }
 
-const { post } = Astro.props;
+const { post, englishSlug } = Astro.props;
 const { Content } = await post.render();
 const pageTitle = `${post.data.title} · Kateiso`;
 const pageDesc = post.data.description;
 const meta = `${post.data.type || 'Essay'} · ${new Date(post.data.date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`;
+const canonical = `/blog/posts/${post.slug}.html`;
+const alternates = englishSlug ? [{ href: `/en/blog/posts/${englishSlug}.html`, hrefLang: 'en' }] : [];
+const articleJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: post.data.title,
+  description: post.data.summary || post.data.description,
+  author: { '@type': 'Person', name: 'Kateiso' },
+  datePublished: post.data.date instanceof Date ? post.data.date.toISOString() : String(post.data.date),
+  inLanguage: 'zh-Hans',
+  url: `https://kateiso.dev${canonical}`,
+};
 ---
-<Base title={pageTitle} description={pageDesc}>
-  <PostLayout title={post.data.title} description={post.data.summary || post.data.description} meta={meta}>
+<Base
+  title={pageTitle}
+  description={pageDesc}
+  lang="zh-Hans"
+  canonical={canonical}
+  alternates={alternates}
+  languageToggle={englishSlug ? { href: `/en/blog/posts/${englishSlug}.html`, label: 'EN', ariaLabel: 'View English version' } : undefined}
+  pageType="article"
+  jsonLd={articleJsonLd}
+>
+  <PostLayout
+    lang="zh-Hans"
+    title={post.data.title}
+    description={post.data.summary || post.data.description}
+    meta={meta}
+  >
     <Content />
   </PostLayout>
 </Base>
-

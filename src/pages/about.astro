@@ -1,32 +1,50 @@
 ---
 import Base from "../../src/layouts/Base.astro";
-const pageTitle = 'About · Kateiso';
-const pageDesc = 'About Kateiso — an ENTJ studying at BJTU and Lancaster University; diving into XR; curious about Web3 and restaurant digitalization.';
+const pageTitle = '关于 · Kateiso';
+const pageDesc = '常驻威海，Lancaster × 北京交通大学双学位，记录 AI into XR 与餐饮数字化。';
+const story = [
+  { title: '我是谁', text: 'ENTJ，生活在威海，在 Lancaster University 与北京交通大学攻读双学位。' },
+  { title: '关注点', text: 'AI into XR（Feel/Frame/Flow 记忆、体感度量）与餐饮数字化（TasteOS、补货与服务节奏）。' },
+  { title: '工作方式', text: '大量写作 + 系统化导图，把体验、研究、运营决策记录成可复用模板。' }
+];
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: pageTitle,
+  description: pageDesc,
+  inLanguage: 'zh-Hans',
+  url: 'https://kateiso.dev/about.html'
+};
 ---
-<Base title={pageTitle} description={pageDesc}>
+<Base
+  title={pageTitle}
+  description={pageDesc}
+  lang="zh-Hans"
+  canonical="/about.html"
+  alternates={[{ href: '/en/about.html', hrefLang: 'en' }]}
+  languageToggle={{ href: '/en/about.html', label: 'EN', ariaLabel: 'View English About' }}
+  jsonLd={jsonLd}
+>
   <section class="section">
     <div class="section__intro">
-      <h1>About</h1>
-      <p class="section__lede">Enjoy Life, Enjoy with U.</p>
+      <h1>关于 Kateiso</h1>
+      <p class="section__lede">Weihai · Lancaster × BJTU</p>
     </div>
     <div class="about-grid">
+      {story.map((item) => (
+        <article class="about-grid__item">
+          <h2>{item.title}</h2>
+          <p>{item.text}</p>
+        </article>
+      ))}
       <article class="about-grid__item">
-        <h2>Bio</h2>
-        <p>An ENTJ studying at BJTU and Lancaster University; diving into XR; curious about Web3 and restaurant digitalization.</p>
-      </article>
-      <article class="about-grid__item">
-        <h2>Focus</h2>
-        <p>First Principle · One more step · System thinking.</p>
-      </article>
-      <article class="about-grid__item">
-        <h2>Contact</h2>
+        <h2>联系方式</h2>
         <p>
-          Email: <a href="mailto:C.yibo2@gmail.com">C.yibo2@gmail.com</a><br>
-          Twitter: <a href="https://x.com/KateisoCao" target="_blank" rel="noopener">@KateisoCao</a><br>
+          Email: <a href="mailto:C.yibo2@gmail.com">C.yibo2@gmail.com</a><br />
+          Twitter: <a href="https://x.com/KateisoCao" target="_blank" rel="noopener">@KateisoCao</a><br />
           Douyin: <a href="https://www.douyin.com/user/MS4wLjABAAAAHCcB9BtLlZP-iSutvkW8oHPPHeSj_IR9rBa5uIq0L3drZDGzCcLmAaTFCozmXLH5?from_tab_name=main" target="_blank" rel="noopener">@Kateiso</a>
         </p>
       </article>
     </div>
   </section>
 </Base>
-

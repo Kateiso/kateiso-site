@@ -1,0 +1,79 @@
+---
+import Base from "../../../../src/layouts/Base.astro";
+const pageTitle = 'Projects · Kateiso';
+const pageDesc = 'Two threads: AI into XR memory rituals and TasteOS for hospitality ops.';
+const projects = [
+  {
+    title: 'Human–AI Co-Memory (HACM)',
+    role: 'AI into XR',
+    period: 'Alpha · 2025',
+    summary: 'Feel/Frame/Flow ledgers, motion scoring, and rehearsal briefs that keep XR rooms aligned.',
+    tags: ['XR', 'HACM', 'Experience']
+  },
+  {
+    title: 'TasteOS',
+    role: 'Hospitality ops',
+    period: 'R&D · 2025',
+    summary: 'Forecast covers, sync prep lists, and merge guest feedback with kitchen execution.',
+    tags: ['Hospitality', 'Ops', 'Forecast']
+  }
+];
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: pageTitle,
+  description: pageDesc,
+  inLanguage: 'en',
+  url: 'https://kateiso.dev/en/projects.html'
+};
+---
+<Base
+  title={pageTitle}
+  description={pageDesc}
+  lang="en"
+  canonical="/en/projects.html"
+  alternates={[{ href: '/projects.html', hrefLang: 'zh-Hans' }]}
+  languageToggle={{ href: '/projects.html', label: '中文', ariaLabel: '查看中文项目' }}
+  jsonLd={jsonLd}
+>
+  <section class="section">
+    <div class="section__intro">
+      <p class="hero__kicker">Projects</p>
+      <h1>Projects</h1>
+      <p class="section__lede">Everything I ship fits either AI into XR memory or TasteOS for restaurants.</p>
+    </div>
+    <div class="project-grid">
+      {projects.map((item) => (
+        <article class="project-card">
+          <div class="project-card__meta">{item.role} · {item.period}</div>
+          <h2 class="project-card__title">{item.title}</h2>
+          <p class="project-card__summary">{item.summary}</p>
+          <div class="project-card__tags">
+            {item.tags.map((tag) => <span class="pill">{tag}</span>)}
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="section__intro">
+      <h2>How I build</h2>
+      <p class="section__lede">Write → capture on site → run monthly reviews.</p>
+    </div>
+    <div class="lane-grid">
+      <article class="lane-card">
+        <h3>Writing</h3>
+        <p>Every rehearsal or dinner rush becomes structured notes.</p>
+      </article>
+      <article class="lane-card">
+        <h3>On-site capture</h3>
+        <p>Unified scorecards for XR + restaurants feed the systems overnight.</p>
+      </article>
+      <article class="lane-card">
+        <h3>Review</h3>
+        <p>Monthly retros refresh HACM manuals and TasteOS modules.</p>
+      </article>
+    </div>
+  </section>
+</Base>

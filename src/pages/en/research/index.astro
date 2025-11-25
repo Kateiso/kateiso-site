@@ -1,0 +1,54 @@
+---
+import Base from "../../../../src/layouts/Base.astro";
+const pageTitle = 'Research · Kateiso';
+const pageDesc = 'Research cards on AI into XR memory and TasteOS for hospitality.';
+const questions = [
+  'How do Feel/Frame/Flow logs survive across XR rehearsals?',
+  'Can restaurant service scores sync with supply rhythm in real time?',
+  'How should AI surface uncertainty inside noisy rooms—stage or kitchen?'
+];
+const experiments = [
+  { title: 'HACM Atlas', detail: 'JSON-LD schema for Feel/Frame/Flow fragments shared across rehearsal tools.' },
+  { title: 'XR Empathy Meter', detail: 'Heart rate + motion scores + interviews to visualise stage energy.' },
+  { title: 'TasteOS Pulse', detail: 'Causal graphs linking prep, staffing, and guest feedback for daily adjustments.' }
+];
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: pageTitle,
+  description: pageDesc,
+  inLanguage: 'en',
+  url: 'https://kateiso.dev/en/research.html'
+};
+---
+<Base
+  title={pageTitle}
+  description={pageDesc}
+  lang="en"
+  canonical="/en/research.html"
+  alternates={[{ href: '/research.html', hrefLang: 'zh-Hans' }]}
+  languageToggle={{ href: '/research.html', label: '中文', ariaLabel: '查看中文研究' }}
+  jsonLd={jsonLd}
+>
+  <section class="section">
+    <div class="section__intro">
+      <p class="hero__kicker">Research Loop</p>
+      <h1>Research</h1>
+      <p class="section__lede">Calm documentation of AI uncertainty and XR rituals feeding HACM.</p>
+    </div>
+    <div class="research-grid">
+      <div class="research-card">
+        <h2>Key questions</h2>
+        <ul>
+          {questions.map((q) => <li>{q}</li>)}
+        </ul>
+      </div>
+      <div class="research-card">
+        <h2>Active experiments</h2>
+        <ul>
+          {experiments.map((exp) => <li><strong>{exp.title}</strong> — {exp.detail}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+</Base>

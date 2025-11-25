@@ -1,0 +1,93 @@
+---
+import Base from "../../../../src/layouts/Base.astro";
+import { getCollection } from "astro:content";
+const postsEn = await getCollection('postsEn');
+const fallback = postsEn.length === 0;
+const source = fallback ? await getCollection('posts') : postsEn;
+const posts = source.sort((a,b) => (a.data.date < b.data.date ? 1 : -1));
+const pageTitle = 'Journal (EN) · Kateiso';
+const pageDesc = fallback
+  ? 'English log is warming up. Showing Chinese essays until English entries arrive.'
+  : 'English essays on AI into XR, TasteOS, and research notes.';
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: pageTitle,
+  description: pageDesc,
+  inLanguage: 'en',
+  url: 'https://kateiso.dev/en/blog.html'
+};
+---
+<Base
+  title={pageTitle}
+  description={pageDesc}
+  lang="en"
+  canonical="/en/blog.html"
+  alternates={[{ href: '/blog.html', hrefLang: 'zh-Hans' }]}
+  languageToggle={{ href: '/blog.html', label: '中文', ariaLabel: '查看中文日志' }}
+  jsonLd={jsonLd}
+>
+  <section class="section">
+    <div class="section__intro">
+      <h1>Journal · EN</h1>
+      <p class="section__lede">
+        {fallback ? 'English summaries are coming soon. Below is the Chinese log for reference.' : 'Field notes on AI into XR rehearsals, TasteOS ops, and research.'}
+      </p>
+    </div>
+
+    <div class="section__intro section__intro--split">
+      <input id="search" type="search" placeholder="Search English posts…" style="padding:0.7rem 1rem;border:1px solid var(--color-border);border-radius:12px;width:min(480px, 100%);" />
+      <span aria-live="polite" id="search-count" style="color:var(--color-text-muted)"></span>
+    </div>
+
+    {fallback && (
+      <p class="notice" style="margin-bottom:var(--spacing-md);color:var(--color-text-muted);">
+        Showing Chinese posts until English entries ship.
+      </p>
+    )}
+
+    <div class="blog-list" id="results">
+      {posts.map((p) => (
+        <article class="blog-card">
+          <p class="blog-card__meta">{new Date(p.data.date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })} · {p.data.type}</p>
+          <h2><a href={fallback ? `/blog/posts/${p.slug}.html` : `/en/blog/posts/${p.slug}.html`}>{p.data.title}</a></h2>
+          <p class="blog-card__summary">{p.data.summary}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <script>
+    const input = document.getElementById('search');
+    const results = document.getElementById('results');
+    const counter = document.getElementById('search-count');
+    let index = [];
+    fetch('/assets/data/search-en.json')
+      .then((r) => r.json())
+      .then((data) => (index = data.items || []))
+      .catch(() => (index = []));
+
+    function render(items) {
+      results.innerHTML = items.map((it) => `
+        <article class="blog-card">
+          <p class="blog-card__meta">${it.date ? new Date(it.date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : ''} ${it.type ? '· ' + it.type : ''}</p>
+          <h2><a href="${it.slug}">${it.title}</a></h2>
+          <p class="blog-card__summary">${it.summary || ''}</p>
+        </article>
+      `).join('');
+      counter.textContent = `${items.length} result${items.length === 1 ? '' : 's'}`;
+    }
+
+    input?.addEventListener('input', () => {
+      const q = input.value.trim().toLowerCase();
+      if (!q) {
+        counter.textContent = '';
+        return;
+      }
+      const filtered = index.filter((it) =>
+        [it.title, it.summary, (it.tags || []).join(' ')].some((f) => (f || '').toLowerCase().includes(q))
+      );
+      render(filtered);
+    });
+  </script>
+</Base>

@@ -1,15 +1,14 @@
 ---
-import Base from "../../src/layouts/Base.astro";
+import Base from "../../../src/layouts/Base.astro";
 import fs from 'node:fs/promises';
-const pageTitle = '相册 · Kateiso';
-const pageDesc = '共享 manifest 的相册，记录 XR、旅途与日常的轻盈片段。';
+const pageTitle = 'Photos · Kateiso';
+const pageDesc = 'Shared gallery moments captured across XR work and daily life.';
 let items = [] as any[];
 try {
   const raw = await fs.readFile('public/assets/data/gallery.json', 'utf8');
   const json = JSON.parse(raw);
   items = json.items || [];
 } catch {}
-
 const years = Array.from(new Set(items.map((i) => (i.date || '').slice(0,4)))).filter(Boolean).sort((a,b) => (a < b ? 1 : -1));
 const url = new URL(Astro.request.url);
 const activeYear = url.searchParams.get('year');
@@ -19,30 +18,31 @@ const jsonLd = {
   '@type': 'CollectionPage',
   name: pageTitle,
   description: pageDesc,
-  inLanguage: 'zh-Hans',
-  url: 'https://kateiso.dev/photos.html'
+  inLanguage: 'en',
+  url: 'https://kateiso.dev/en/photos.html'
 };
 ---
 <Base
   title={pageTitle}
   description={pageDesc}
-  lang="zh-Hans"
-  canonical="/photos.html"
+  lang="en"
+  canonical="/en/photos.html"
+  alternates={[{ href: '/photos.html', hrefLang: 'zh-Hans' }]}
+  languageToggle={{ href: '/photos.html', label: '中文', ariaLabel: '查看中文相册' }}
   jsonLd={jsonLd}
 >
   <section class="section photos-page">
     <div class="section__intro section__intro--split">
       <div>
-        <h1>相册</h1>
-        <p class="section__lede">Enjoy Life, Enjoy with U.</p>
+        <h1>Photos</h1>
+        <p class="section__lede">Shared diary of rehearsals, travel, and everyday study.</p>
       </div>
       <nav aria-label="Year filter" class="photos-filter">
-        <a href="/photos.html" class={activeYear ? '' : 'is-active'}>全部</a>
-        {years.map((y) => <a href={`/photos.html?year=${y}`} class={activeYear === y ? 'is-active' : ''}>{y}</a>)}
+        <a href="/en/photos.html" class={activeYear ? '' : 'is-active'}>All</a>
+        {years.map((y) => <a href={`/en/photos.html?year=${y}`} class={activeYear === y ? 'is-active' : ''}>{y}</a>)}
       </nav>
     </div>
 
-    <!-- Featured large media -->
     {filtered.length > 0 && (
       <section class="photos-featured" aria-label="Featured photo">
         <div class="photos-featured__inner">
@@ -55,10 +55,10 @@ const jsonLd = {
             <span class="photos-featured__date">{filtered[0].date}</span>
             <span aria-hidden="true">·</span>
             <span class="photos-featured__title">{filtered[0].title}</span>
-            <button class="photos-featured__open" data-index="0" aria-label="打开灯箱">查看</button>
+            <button class="photos-featured__open" data-index="0" aria-label="Open in lightbox">Open</button>
           </div>
-          <button class="photos-featured__nav photos-featured__nav--prev" aria-label="上一张">‹</button>
-          <button class="photos-featured__nav photos-featured__nav--next" aria-label="下一张">›</button>
+          <button class="photos-featured__nav photos-featured__nav--prev" aria-label="Previous">‹</button>
+          <button class="photos-featured__nav photos-featured__nav--next" aria-label="Next">›</button>
         </div>
       </section>
     )}
@@ -66,7 +66,7 @@ const jsonLd = {
     <div class="gallery-grid gallery--masonry" id="gallery">
       {filtered.map((it) => (
         <figure class="gallery-item">
-          <button class="gallery-item__btn" data-image={it.image} data-video={it.video || ''} data-title={it.title} data-date={it.date} aria-label={`查看 ${it.title}`} data-index={filtered.indexOf(it)}>
+          <button class="gallery-item__btn" data-image={it.image} data-video={it.video || ''} data-title={it.title} data-date={it.date} aria-label={`Open ${it.title}`} data-index={filtered.indexOf(it)}>
             {it.video ? (
               <video class="gallery-item__media" src={it.video} poster={it.image} muted playsinline preload="metadata" loop></video>
             ) : (
@@ -84,15 +84,15 @@ const jsonLd = {
   </section>
 
   <div class="lightbox" id="lightbox" hidden>
-    <button class="lightbox__backdrop" data-action="close" aria-label="关闭"></button>
+    <button class="lightbox__backdrop" data-action="close" aria-label="Close"></button>
     <div class="lightbox__inner" role="dialog" aria-modal="true">
       <figure>
         <div id="lightbox-media"></div>
         <figcaption class="lightbox__caption"><span id="lightbox-date"></span> · <span id="lightbox-title"></span></figcaption>
       </figure>
-      <button class="lightbox__nav lightbox__nav--prev" aria-label="上一张">‹</button>
-      <button class="lightbox__nav lightbox__nav--next" aria-label="下一张">›</button>
-      <button class="lightbox__close" data-action="close" aria-label="关闭">✕</button>
+      <button class="lightbox__nav lightbox__nav--prev" aria-label="Previous">‹</button>
+      <button class="lightbox__nav lightbox__nav--next" aria-label="Next">›</button>
+      <button class="lightbox__close" data-action="close" aria-label="Close">✕</button>
     </div>
   </div>
 

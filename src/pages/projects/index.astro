@@ -1,0 +1,79 @@
+---
+import Base from "../../../src/layouts/Base.astro";
+const pageTitle = '项目 · Kateiso';
+const pageDesc = '聚焦 AI into XR 与餐饮数字化的两个主线项目。';
+const projects = [
+  {
+    title: 'HACM 共记忆系统',
+    role: 'AI into XR',
+    period: 'Alpha · 2025',
+    summary: 'Feel / Frame / Flow 记忆表、体感评分与排练小结，把彩排当成可复用的数据结构。',
+    tags: ['XR', 'HACM', 'Experience']
+  },
+  {
+    title: 'TasteOS',
+    role: '餐饮数字化',
+    period: 'R&D · 2025',
+    summary: '结合客流预测、备餐清单与体验评分，帮助餐厅同步前台与后厨节奏。',
+    tags: ['Hospitality', 'Ops', 'Forecast']
+  }
+];
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: pageTitle,
+  description: pageDesc,
+  inLanguage: 'zh-Hans',
+  url: 'https://kateiso.dev/projects.html'
+};
+---
+<Base
+  title={pageTitle}
+  description={pageDesc}
+  lang="zh-Hans"
+  canonical="/projects.html"
+  alternates={[{ href: '/en/projects.html', hrefLang: 'en' }]}
+  languageToggle={{ href: '/en/projects.html', label: 'EN', ariaLabel: 'View English Projects' }}
+  jsonLd={jsonLd}
+>
+  <section class="section">
+    <div class="section__intro">
+      <p class="hero__kicker">Projects</p>
+      <h1>项目</h1>
+      <p class="section__lede">所有工作都围绕 XR 的共记忆以及餐饮数字化展开。</p>
+    </div>
+    <div class="project-grid">
+      {projects.map((item) => (
+        <article class="project-card">
+          <div class="project-card__meta">{item.role} · {item.period}</div>
+          <h2 class="project-card__title">{item.title}</h2>
+          <p class="project-card__summary">{item.summary}</p>
+          <div class="project-card__tags">
+            {item.tags.map((tag) => <span class="pill">{tag}</span>)}
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="section__intro">
+      <h2>推进方式</h2>
+      <p class="section__lede">写作 + 现场记录 + 复盘，三件事循环往复。</p>
+    </div>
+    <div class="lane-grid">
+      <article class="lane-card">
+        <h3>写作</h3>
+        <p>把排练或门店体验拆解成结构化文本，方便回放。</p>
+      </article>
+      <article class="lane-card">
+        <h3>现场记录</h3>
+        <p>XR 彩排与餐厅高峰都使用统一的记分模板，第二天即可复用。</p>
+      </article>
+      <article class="lane-card">
+        <h3>复盘</h3>
+        <p>每月集中刷新 HACM 手册与 TasteOS 模块，保持系统新鲜。</p>
+      </article>
+    </div>
+  </section>
+</Base>

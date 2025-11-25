@@ -1,9 +1,9 @@
 import { getCollection } from 'astro:content';
 
 export async function GET() {
-  const posts = await getCollection('posts');
+  const posts = await getCollection('postsEn');
   const items = posts.map((p) => ({
-    slug: `/blog/posts/${p.slug}.html`,
+    slug: `/en/blog/posts/${p.slug}.html`,
     title: p.data.title,
     summary: p.data.summary || p.data.description,
     type: p.data.type,
@@ -12,9 +12,9 @@ export async function GET() {
   }));
 
   const about = {
-    slug: '/about.html',
-    title: '关于 Kateiso',
-    summary: '关于 Kateiso：背景、关注主题与联系方式。',
+    slug: '/en/about.html',
+    title: 'About Kateiso',
+    summary: 'English bio focused on HACM, XR collaboration, and research touchpoints.',
     type: 'Page',
     date: '',
     tags: ['about']

@@ -15,11 +15,16 @@
 
 - `src/pages/index.astro`：主页
 - `src/pages/about.astro`：关于页面（纳入站内搜索）
+- `src/pages/projects/index.astro`、`src/pages/research/index.astro`、`src/pages/contact.astro`：项目 / 研究 / 联系
 - `src/pages/blog/index.astro`：博客索引页
 - `src/pages/blog/posts/[slug].astro`：文章路由
 - `src/content/posts/*.md`：Markdown 文章（Frontmatter 管理元信息）
+- `src/content/postsEn/*.md`：英文文章集合（同样的 Frontmatter）
 - `src/pages/assets/data/search.json.ts`：搜索索引（构建时生成静态 JSON）
+- `src/pages/en/*`：英文子站（`/en/index.html`、`/en/about.html`、`/en/projects.html` 等）
+- `src/pages/assets/data/search-en.json.ts`：英文搜索索引
 - `src/pages/rss.xml.ts`：RSS 输出
+- `src/pages/rss-en.xml.ts`：英文 RSS 输出
 - `public/assets/`：样式、脚本与图片（从原 `assets/` 迁移）
 - `public/CNAME`：`kateiso.dev`
 - `inbox/`：媒体收集文件夹（投放原始图片/Live Photo）
@@ -38,6 +43,13 @@
 - `tags`（数组）
 
 图片请放在 `public/assets/media/posts/<slug>/`，并补全 `alt` 文案。
+
+### 英文文章（/en/）
+
+- 位置：`src/content/postsEn/<slug>.md`
+- Frontmatter 字段与中文完全一致。
+- 构建会输出 `/en/blog.html` 与 `/en/blog/posts/<slug>.html`，并生成 `/assets/data/search-en.json` 与 `/rss-en.xml`。
+- 若某篇文章暂未写英文版，可仅保留中文；英文博客会自动提示并回退到中文列表，URL 仍保持 `/en/` 结构。
 
 ## 图片收集（Inbox 工作流）
 

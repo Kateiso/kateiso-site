@@ -1,0 +1,56 @@
+---
+import Base from "../../../src/layouts/Base.astro";
+const pageTitle = 'Contact · Kateiso';
+const pageDesc = 'Collaborate on AI into XR, TasteOS, research, or talks.';
+const channels = [
+  { label: 'Email', value: 'C.yibo2@gmail.com', href: 'mailto:C.yibo2@gmail.com' },
+  { label: 'Twitter', value: '@KateisoCao', href: 'https://x.com/KateisoCao' }
+];
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: pageTitle,
+  description: pageDesc,
+  inLanguage: 'en',
+  url: 'https://kateiso.dev/en/contact.html'
+};
+---
+<Base
+  title={pageTitle}
+  description={pageDesc}
+  lang="en"
+  canonical="/en/contact.html"
+  alternates={[{ href: '/contact.html', hrefLang: 'zh-Hans' }]}
+  languageToggle={{ href: '/contact.html', label: '中文', ariaLabel: '查看中文联系页' }}
+  jsonLd={jsonLd}
+>
+  <section class="section">
+    <div class="section__intro">
+      <p class="hero__kicker">Contact</p>
+      <h1>Work together</h1>
+      <p class="section__lede">Open to XR rehearsals, hospitality digitisation, co-writing, and speaking.</p>
+    </div>
+    <div class="contact-panel">
+      <div>
+        <h2>Ping me</h2>
+        <ul class="contact-panel__list">
+          {channels.map((ch) => (
+            <li>
+              <span>{ch.label}</span>
+              <a href={ch.href} target={ch.href.startsWith('http') ? '_blank' : undefined} rel="noopener">{ch.value}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <h2>Topics</h2>
+        <ul class="contact-panel__topics">
+          <li>AI into XR (Feel/Frame/Flow, empathy meters)</li>
+          <li>XR + AI workshops or rehearsals</li>
+          <li>TasteOS & hospitality digitisation</li>
+          <li>Talks / research collaborations</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</Base>
