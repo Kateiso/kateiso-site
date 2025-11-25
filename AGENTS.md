@@ -21,6 +21,7 @@ Purpose
 - Build: npm run build
 - Preview: npm run preview
 - The prebuild hook runs npm run media:inbox automatically.
+- Git pushes: prefer SSH remote (git@github.com or ssh.github.com:443) to avoid token prompts; configure once per machine.
 
   Authoring — Posts (Markdown)
 
