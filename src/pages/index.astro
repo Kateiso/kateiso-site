@@ -2,8 +2,8 @@
 import Base from "../../src/layouts/Base.astro";
 import fs from 'node:fs/promises';
 import { getCollection } from 'astro:content';
-const pageTitle = 'Kateiso · AI into XR & 餐饮数字化记录';
-const pageDesc = '定居宁波，在威海攻读 Lancaster × 北京交通大学双学位，专注 AI into XR 与餐饮数字化。';
+const pageTitle = 'Kateiso · AI into XR & AI into Dining';
+const pageDesc = '定居宁波，在威海攻读 Lancaster × 北京交通大学双学位，专注 AI into XR 与 AI into Dining。';
 let gallery = [] as any[];
 try {
   const raw = await fs.readFile('public/assets/data/gallery.json', 'utf8');
@@ -13,20 +13,26 @@ try {
 const posts = (await getCollection('posts')).sort((a,b) => (a.data.date < b.data.date ? 1 : -1)).slice(0, 3);
 const portrait = '/assets/media/gallery/2025-05-23-vison-pro-at-jinan.jpeg';
 const timeline = [
-  { year: '2025', detail: 'Human AI Co-Memory 毕设进行中，聚焦 AI 在 XR 彩排中的垂直应用。' },
-  { year: '2024', detail: '把餐饮数字化定为长期课题，TasteOS 与多家门店一起跑数据。' },
-  { year: '2022', detail: '进入北京交通大学并加入 Lancaster 联合培养项目，主修信息管理。' },
+  { 
+    year: '2025', 
+    detail: [
+      'Human AI Co-Memory 毕设进行中，创造人机共同记忆体验；',
+      '并聚焦 AI 在 XR 中的垂直应用。'
+    ]
+  },
+  { year: '2024', detail: '把AI into Dining定为长期课题，优化门店表现。' },
+  { year: '2022', detail: '进入北京交通大学、Lancaster 联合培养项目，主修数媒-交互。' },
   { year: '2003', detail: '出生于宁波，习惯把海风的节奏记下来。' }
 ];
 const focusAreas = [
   {
     title: 'AI into XR',
-    summary: 'AI 在 XR 场景下的垂直应用：Feel / Frame / Flow 仪式、体感评分、共记忆脚本。',
+    summary: 'AI 在 XR 场景下的垂直应用',
     link: '/projects.html'
   },
   {
     title: 'AI into 餐饮',
-    summary: '做 AI 技术（LLM、Agent）在餐饮领域的垂直应用，把补货、排班与体验分串起来。',
+    summary: '做 AI 技术（LLM、Agent）在餐饮领域的垂直应用',
     link: '/projects.html'
   }
 ];
@@ -60,7 +66,7 @@ const jsonLd = {
     <div class="hero__content">
       <p class="hero__kicker">Weihai Campus · Ningbo Home</p>
       <h1>Kateiso</h1>
-      <p class="hero__subtitle">专注 AI into XR 与餐饮数字化，期待与你链接～</p>
+      <p class="hero__subtitle">专注 AI into XR 与AI into Dining，期待与你链接～</p>
       <div class="hero__actions">
         <a class="button button--primary" href="/projects.html">项目概览</a>
         <a class="button button--ghost" href="/blog.html">博客文章</a>
@@ -106,7 +112,7 @@ const jsonLd = {
       <div class="section__intro section__intro--split">
         <div>
           <h2>近期瞬间</h2>
-          <p class="section__lede">用共享 manifest 记录生活与创作。</p>
+          <!-- End of Selection -->
         </div>
         <a class="section__link" href="/photos.html">进入相册 →</a>
       </div>
@@ -152,7 +158,7 @@ const jsonLd = {
     <div class="contact-card">
       <p class="contact-card__label">下一步</p>
       <h2>一起把现实写进系统</h2>
-      <p>邮件是我最专注的沟通方式，欢迎聊 XR 排练、餐饮数字化、合作与演讲。</p>
+      <p>邮件是我最专注的沟通方式，欢迎聊 XR 排练、AI into Dining、合作与演讲。</p>
       <div class="contact-card__actions">
         <a class="button button--primary" href="mailto:C.yibo2@gmail.com">发邮件</a>
         <a class="button button--ghost" href="/contact.html">查看更多联系方式</a>
