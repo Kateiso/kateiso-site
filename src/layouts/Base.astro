@@ -39,18 +39,14 @@ const resolvedOgImage = ogImage.startsWith('http') ? ogImage : new URL(ogImage, 
 const isEnglish = lang?.startsWith('en');
 const navItems = isEnglish
   ? [
-      { href: '/en/about.html', label: 'About' },
       { href: '/en/projects.html', label: 'Projects' },
-      { href: '/en/research.html', label: 'Research' },
-      { href: '/en/blog.html', label: 'Journal' },
+      { href: '/en/blog.html', label: 'Blog' },
       { href: '/en/photos.html', label: 'Photos' },
       { href: '/en/contact.html', label: 'Contact' },
     ]
   : [
-      { href: '/about.html', label: '关于' },
       { href: '/projects.html', label: '项目' },
-      { href: '/research.html', label: '研究' },
-      { href: '/blog.html', label: '日志' },
+      { href: '/blog.html', label: '博客' },
       { href: '/photos.html', label: '相册' },
       { href: '/contact.html', label: '联系' },
     ];
@@ -138,7 +134,7 @@ const structuredData = [...baseJsonLd, ...computedJsonLd];
       <div class="site-footer__inner">
         <p class="site-footer__brand">© <span data-js="year"></span> Kateiso. All rights reserved.</p>
         <nav class="site-footer__nav" aria-label="Secondary navigation">
-          <a href={isEnglish ? '/en/blog.html' : '/blog.html'}>{isEnglish ? 'Journal' : '日志'}</a>
+          <a href={isEnglish ? '/en/blog.html' : '/blog.html'}>{isEnglish ? 'Blog' : '博客'}</a>
           <span aria-hidden="true">·</span>
           <a href={isEnglish ? '/en/projects.html' : '/projects.html'}>{isEnglish ? 'Projects' : '项目'}</a>
           <span aria-hidden="true">·</span>

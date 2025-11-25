@@ -2,7 +2,7 @@
 import Base from "../../../src/layouts/Base.astro";
 import { getCollection } from "astro:content";
 const posts = (await getCollection('posts')).sort((a,b) => (a.data.date < b.data.date ? 1 : -1));
-const pageTitle = '日志 · Kateiso';
+const pageTitle = '博客 · Kateiso';
 const pageDesc = '记录 AI into XR 与餐饮数字化的每一次试验、复盘与感想。';
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -24,12 +24,12 @@ const jsonLd = {
 >
   <section class="section">
     <div class="section__intro">
-      <h1>日志</h1>
+      <h1>博客</h1>
       <p class="section__lede">在威海、北京、兰开夏之间移动时写下的 XR 与餐饮运营观察。</p>
     </div>
 
     <div class="section__intro section__intro--split">
-      <input id="search" type="search" placeholder="搜索文章与关于页面…" style="padding:0.7rem 1rem;border:1px solid var(--color-border);border-radius:12px;width:min(480px, 100%);" />
+      <input id="search" type="search" placeholder="搜索文章…" style="padding:0.7rem 1rem;border:1px solid var(--color-border);border-radius:12px;width:min(480px, 100%);" />
       <span aria-live="polite" id="search-count" style="color:var(--color-text-muted)"></span>
     </div>
 

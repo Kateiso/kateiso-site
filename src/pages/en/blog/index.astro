@@ -5,10 +5,10 @@ const postsEn = await getCollection('postsEn');
 const fallback = postsEn.length === 0;
 const source = fallback ? await getCollection('posts') : postsEn;
 const posts = source.sort((a,b) => (a.data.date < b.data.date ? 1 : -1));
-const pageTitle = 'Journal (EN) · Kateiso';
+const pageTitle = 'Blog (EN) · Kateiso';
 const pageDesc = fallback
-  ? 'English log is warming up. Showing Chinese essays until English entries arrive.'
-  : 'English essays on AI into XR, TasteOS, and research notes.';
+  ? 'English blog is warming up. Showing Chinese essays until English entries arrive.'
+  : 'English essays on AI into XR and TasteOS operations.';
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
@@ -24,19 +24,19 @@ const jsonLd = {
   lang="en"
   canonical="/en/blog.html"
   alternates={[{ href: '/blog.html', hrefLang: 'zh-Hans' }]}
-  languageToggle={{ href: '/blog.html', label: '中文', ariaLabel: '查看中文日志' }}
+  languageToggle={{ href: '/blog.html', label: '中文', ariaLabel: '查看中文博客' }}
   jsonLd={jsonLd}
 >
   <section class="section">
     <div class="section__intro">
-      <h1>Journal · EN</h1>
+      <h1>Blog · EN</h1>
       <p class="section__lede">
-        {fallback ? 'English summaries are coming soon. Below is the Chinese log for reference.' : 'Field notes on AI into XR rehearsals, TasteOS ops, and research.'}
+        {fallback ? 'English summaries are coming soon. Below is the Chinese blog for reference.' : 'Field notes on AI into XR rehearsals and TasteOS operations.'}
       </p>
     </div>
 
     <div class="section__intro section__intro--split">
-      <input id="search" type="search" placeholder="Search English posts…" style="padding:0.7rem 1rem;border:1px solid var(--color-border);border-radius:12px;width:min(480px, 100%);" />
+      <input id="search" type="search" placeholder="Search blog posts…" style="padding:0.7rem 1rem;border:1px solid var(--color-border);border-radius:12px;width:min(480px, 100%);" />
       <span aria-live="polite" id="search-count" style="color:var(--color-text-muted)"></span>
     </div>
 

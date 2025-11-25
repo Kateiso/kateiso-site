@@ -11,16 +11,7 @@ export async function GET() {
     tags: p.data.tags || [],
   }));
 
-  const about = {
-    slug: '/en/about.html',
-    title: 'About Kateiso',
-    summary: 'English bio focused on HACM, XR collaboration, and research touchpoints.',
-    type: 'Page',
-    date: '',
-    tags: ['about']
-  };
-
-  return new Response(JSON.stringify({ items: [...items, about] }), {
+  return new Response(JSON.stringify({ items }), {
     headers: { 'Content-Type': 'application/json' }
   });
 }

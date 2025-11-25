@@ -4,7 +4,7 @@ import { getCollection } from 'astro:content';
 export async function GET(context) {
   const posts = await getCollection('posts');
   return rss({
-    title: 'Kateiso Journal',
+    title: 'Kateiso Blog',
     description: 'Essays and notes on intelligent creative systems',
     site: context.site,
     items: posts.map((p) => ({
@@ -15,4 +15,3 @@ export async function GET(context) {
     })),
   });
 }
-

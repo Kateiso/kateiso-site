@@ -14,14 +14,13 @@
 ## 目录结构
 
 - `src/pages/index.astro`：主页
-- `src/pages/about.astro`：关于页面（纳入站内搜索）
-- `src/pages/projects/index.astro`、`src/pages/research/index.astro`、`src/pages/contact.astro`：项目 / 研究 / 联系
+- `src/pages/projects/index.astro`、`src/pages/contact.astro`：项目 / 联系
 - `src/pages/blog/index.astro`：博客索引页
 - `src/pages/blog/posts/[slug].astro`：文章路由
 - `src/content/posts/*.md`：Markdown 文章（Frontmatter 管理元信息）
 - `src/content/postsEn/*.md`：英文文章集合（同样的 Frontmatter）
 - `src/pages/assets/data/search.json.ts`：搜索索引（构建时生成静态 JSON）
-- `src/pages/en/*`：英文子站（`/en/index.html`、`/en/about.html`、`/en/projects.html` 等）
+- `src/pages/en/*`：英文子站（`/en/index.html`、`/en/projects.html`、`/en/contact.html` 等）
 - `src/pages/assets/data/search-en.json.ts`：英文搜索索引
 - `src/pages/rss.xml.ts`：RSS 输出
 - `src/pages/rss-en.xml.ts`：英文 RSS 输出
@@ -76,7 +75,7 @@
 
 ## 搜索 / RSS / 站点地图 / 统计
 
-- 搜索：构建时生成 `/assets/data/search.json`，博客页前端完成检索，包含 About 页面。
+- 搜索：构建时生成 `/assets/data/search.json`，博客页前端完成检索（仅包含文章）。
 - RSS：`/rss.xml`
 - 站点地图：`@astrojs/sitemap` 使用 `https://kateiso.dev`
 - 统计：内置 Plausible 脚本（可改为 GA4）

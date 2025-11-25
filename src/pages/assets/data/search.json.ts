@@ -11,16 +11,7 @@ export async function GET() {
     tags: p.data.tags || [],
   }));
 
-  const about = {
-    slug: '/about.html',
-    title: '关于 Kateiso',
-    summary: '关于 Kateiso：背景、关注主题与联系方式。',
-    type: 'Page',
-    date: '',
-    tags: ['about']
-  };
-
-  return new Response(JSON.stringify({ items: [...items, about] }), {
+  return new Response(JSON.stringify({ items }), {
     headers: { 'Content-Type': 'application/json' }
   });
 }

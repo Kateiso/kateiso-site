@@ -3,7 +3,7 @@ import Base from "../../../src/layouts/Base.astro";
 import fs from 'node:fs/promises';
 import { getCollection } from 'astro:content';
 const pageTitle = 'Kateiso · AI into XR & Hospitality Ops';
-const pageDesc = 'Based in Ningbo, studying in Weihai via the Lancaster × BJTU dual degree, translating AI thinking into XR rehearsals and restaurant systems.';
+const pageDesc = 'Studying in Weihai via the Lancaster × BJTU dual degree, originally from Ningbo, translating AI thinking into XR rehearsals and restaurant systems.';
 let gallery = [] as any[];
 try {
   const raw = await fs.readFile('public/assets/data/gallery.json', 'utf8');
@@ -53,7 +53,7 @@ const jsonLd = {
       <img src={portrait} alt="Kateiso portrait" loading="lazy" />
     </div>
     <div class="hero__content">
-      <p class="hero__kicker">Ningbo Base · Weihai Campus</p>
+      <p class="hero__kicker">Weihai Campus · from Ningbo</p>
       <h1>Kateiso</h1>
       <p class="hero__subtitle">I focus on AI into XR and hospitality, hoping to link up with collaborators who enjoy living systems.</p>
       <div class="hero__actions">
@@ -61,7 +61,7 @@ const jsonLd = {
         <a class="button button--ghost" href="/en/contact.html">Contact</a>
       </div>
       <ul class="hero__facts">
-        <li>Base: Ningbo · study in Weihai</li>
+        <li>Study in Weihai · from Ningbo</li>
         <li>Dual degree · Lancaster University & BJTU</li>
         <li>Email <a href="mailto:C.yibo2@gmail.com">C.yibo2@gmail.com</a></li>
       </ul>
@@ -127,8 +127,8 @@ const jsonLd = {
   <section class="section section--alt" id="journal">
     <div class="section__intro section__intro--split">
       <div>
-        <h2>Journal picks</h2>
-        <p class="section__lede">Notes on experiments, research, and operations.</p>
+        <h2>Blog picks</h2>
+        <p class="section__lede">Notes on experiments and operations.</p>
       </div>
       <a class="section__link" href="/en/blog.html">Visit blog →</a>
     </div>

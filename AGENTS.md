@@ -10,7 +10,6 @@ Purpose
 - Stack: Astro (static SSG), Node ≥ 18
 - URL policy: Keep file-format URLs and stable routes:
   - Home: /index.html
-  - About: /about.html
   - Photos: /photos.html
   - Blog index: /blog.html
   - Post pages: /blog/posts/`<slug>`.html
@@ -37,7 +36,7 @@ Purpose
 - Images for posts live under public/assets/media/posts/`<slug>`/.
 - Search JSON serializes dates to ISO strings; don’t change the shape:
   - Endpoint: /assets/data/search.json
-  - Includes posts and About page.
+  - Includes blog posts only.
 
   Authoring — Inbox Workflows
 
@@ -87,7 +86,7 @@ Purpose
 - Page-only tweaks:
   - Prefer scoped `<style>` blocks in the .astro page to avoid global impact.
 - Navigation links:
-  - Use .html for top-level pages (e.g., /about.html, /photos.html, /blog.html).
+  - Use .html for top-level pages (e.g., /photos.html, /blog.html, /contact.html).
   - Keep post links as /blog/posts/`<slug>`.html.
 
   Data and Integrations
@@ -104,7 +103,7 @@ Purpose
 
   Editing Guidance
 
-- Minor copy/structure changes: edit specific .astro page (e.g., src/pages/about.astro).
+- Minor copy/structure changes: edit specific .astro page (e.g., src/pages/contact.astro).
 - Page-only style changes: add a scoped `<style>` in the same .astro file.
 - Global adjustments (site-wide): edit public/assets/css/styles.css vars and class rules.
 - Do not move or rename:
