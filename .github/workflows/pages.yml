@@ -1,6 +1,8 @@
-name: Deploy Astro site to GitHub Pages
+name: CI/CD for Astro site
 
 on:
+  pull_request:
+    branches: [ main ]
   push:
     branches: [ main ]
   workflow_dispatch:
@@ -16,6 +18,7 @@ concurrency:
 
 jobs:
   build:
+    name: CI Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -32,10 +35,12 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist
+          path: ./docs
 
   deploy:
+    name: CD Deploy
     needs: build
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -44,4 +49,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
