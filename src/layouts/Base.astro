@@ -104,7 +104,10 @@ const structuredData = [...baseJsonLd, ...computedJsonLd];
   <body class={Astro.url.pathname.startsWith('/blog') ? 'with-subpage-header' : ''}>
     <header class="site-header" data-js="nav">
       <div class="site-header__inner">
-        <a class="site-logo" href={isEnglish ? '/en/index.html' : '/index.html'}>Kateiso</a>
+        <a class="site-logo" href={isEnglish ? '/en/index.html' : '/index.html'} aria-label="Kateiso Home">
+          <img class="site-logo__image" src="/assets/media/logo-kateiso-cao.png" alt="Kateiso Cao logo" width="40" height="40" />
+          <span class="site-logo__text">Kateiso</span>
+        </a>
         <nav class="site-nav" aria-label="Primary navigation">
           <button class="site-nav__toggle" type="button" aria-expanded="false" aria-controls="site-menu">
             <span class="visually-hidden">Toggle navigation</span>
