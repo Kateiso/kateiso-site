@@ -2,7 +2,7 @@
 import Base from "../../../src/layouts/Base.astro";
 import { getCollection } from "astro:content";
 const posts = (await getCollection('posts')).sort((a,b) => (a.data.date < b.data.date ? 1 : -1));
-const pageTitle = '博客 · Kateiso';
+const pageTitle = '博客 · Kateiso Cao';
 const pageDesc = '记录 AI into XR 与餐饮数字化的每一次试验、复盘与感想。';
 const jsonLd = {
   '@context': 'https://schema.org',

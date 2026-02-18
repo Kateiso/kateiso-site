@@ -5,7 +5,7 @@ const postsEn = await getCollection('postsEn');
 const fallback = postsEn.length === 0;
 const source = fallback ? await getCollection('posts') : postsEn;
 const posts = source.sort((a,b) => (a.data.date < b.data.date ? 1 : -1));
-const pageTitle = 'Blog (EN) · Kateiso';
+const pageTitle = 'Blog (EN) · Kateiso Cao';
 const pageDesc = fallback
   ? 'English blog is warming up. Showing Chinese essays until English entries arrive.'
   : 'English essays on AI into XR and TasteOS operations.';

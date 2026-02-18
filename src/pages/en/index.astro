@@ -2,44 +2,52 @@
 import Base from "../../../src/layouts/Base.astro";
 import fs from 'node:fs/promises';
 import { getCollection } from 'astro:content';
-const pageTitle = 'Kateiso · AI into XR & Hospitality Ops';
+import { normalizeGalleryItems } from '../../utils/gallery';
+
+const pageTitle = 'Kateiso Cao · AI into XR & Hospitality Ops';
 const pageDesc = 'Studying in Weihai via the Lancaster × BJTU dual degree, originally from Ningbo, translating AI thinking into XR rehearsals and restaurant systems.';
+
 let gallery = [] as any[];
 try {
   const raw = await fs.readFile('public/assets/data/gallery.json', 'utf8');
   const json = JSON.parse(raw);
-  gallery = (json.items || []).slice(0, 6);
+  gallery = normalizeGalleryItems(json.items || []).slice(0, 8);
 } catch {}
+
 const postsEn = await getCollection('postsEn');
 const fallback = postsEn.length === 0;
 const postsSource = fallback ? await getCollection('posts') : postsEn;
-const posts = postsSource.sort((a,b) => (a.data.date < b.data.date ? 1 : -1)).slice(0, 3);
+const posts = postsSource.sort((a, b) => (a.data.date < b.data.date ? 1 : -1)).slice(0, 3);
+
 const portrait = '/assets/media/gallery/2025-05-23-vison-pro-at-jinan.jpeg';
 const timeline = [
   { year: '2025', detail: 'Human AI Co-Memory thesis focusing on vertical AI inside XR rehearsals.' },
   { year: '2024', detail: 'Pursued hospitality digitisation full time, launching TasteOS pilots with restaurants.' },
   { year: '2022', detail: 'Joined Beijing Jiaotong University and the Lancaster dual-degree track (Information Management).' },
-  { year: '2003', detail: 'Born in Ningbo, a coastal city that taught me to respect tempo.' }
+  { year: '2003', detail: 'Born in Ningbo, a coastal city that taught me to respect tempo.' },
 ];
+
 const focusAreas = [
   { title: 'AI into XR', summary: 'Vertical AI applications for XR—Feel/Frame/Flow rituals, motion scoring, empathy meters.', link: '/en/projects.html' },
-  { title: 'AI into dining', summary: 'LLM + agent workflows for restaurants, bridging supply, prep, and guest feedback.', link: '/en/projects.html' }
+  { title: 'AI into dining', summary: 'LLM + agent workflows for restaurants, bridging supply, prep, and guest feedback.', link: '/en/projects.html' },
 ];
+
 const socials = [
   { name: 'Email', icon: '/assets/icons/mail.svg', href: 'mailto:C.yibo2@gmail.com' },
   { name: 'X', icon: '/assets/icons/x.svg', href: 'https://x.com/kateiso63760' },
   { name: 'Douyin', icon: '/assets/icons/douyin.svg', href: 'https://www.douyin.com/user/MS4wLjABAAAAHCcB9BtLlZP-iSutvkW8oHPPHeSj_IR9rBa5uIq0L3drZDGzCcLmAaTFCozmXLH5?from_tab_name=main' },
   { name: 'YouTube', icon: '/assets/icons/youtube.svg', href: 'https://www.youtube.com/@KateisoCao' },
   { name: 'Xiaohongshu', icon: '/assets/icons/xiaohongshu.svg', href: 'https://www.xiaohongshu.com/user/profile/5e3ba904000000000100b699' },
-  { name: 'Bilibili', icon: '/assets/icons/bilibili.svg', href: 'https://space.bilibili.com/394045010?spm_id_from=333.1007.0.0' }
+  { name: 'Bilibili', icon: '/assets/icons/bilibili.svg', href: 'https://space.bilibili.com/394045010?spm_id_from=333.1007.0.0' },
 ];
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebPage',
-  name: 'Kateiso · EN',
+  name: 'Kateiso Cao · EN',
   description: pageDesc,
   inLanguage: 'en',
-  url: 'https://kateiso.dev/en/index.html'
+  url: 'https://kateiso.dev/en/index.html',
 };
 ---
 <Base
@@ -53,11 +61,11 @@ const jsonLd = {
 >
   <section class="hero hero--profile" id="top">
     <div class="hero__portrait">
-      <img src={portrait} alt="Kateiso portrait" loading="lazy" />
+      <img src={portrait} alt="Kateiso Cao portrait" loading="lazy" />
     </div>
     <div class="hero__content">
       <p class="hero__kicker">Weihai Campus · from Ningbo</p>
-      <h1>Kateiso</h1>
+      <h1>Kateiso Cao</h1>
       <p class="hero__subtitle">I focus on AI into XR and hospitality, hoping to link up with collaborators who enjoy living systems.</p>
       <div class="hero__actions">
         <a class="button button--primary" href="/en/projects.html">Projects</a>
@@ -104,24 +112,34 @@ const jsonLd = {
       <div class="section__intro section__intro--split">
         <div>
           <h2>Recent visuals</h2>
-          <p class="section__lede">Shared gallery from the Chinese hub.</p>
+          <p class="section__lede">A media rail that feels closer to streaming than static cards.</p>
         </div>
-        <a class="section__link" href="/photos.html">Explore gallery →</a>
+        <a class="section__link" href="/en/photos.html">Explore gallery →</a>
       </div>
-      <div class="gallery-grid home-gallery">
+
+      <div class="moments-rail" role="list">
         {gallery.map((it) => (
-          <figure class="gallery-item">
-            {it.video ? (
-              <video class="gallery-item__media" src={it.video} poster={it.image} muted playsinline preload="metadata" loop></video>
-            ) : (
-              <img class="gallery-item__media" src={it.image} alt={it.title} loading="lazy" />
-            )}
-            <figcaption class="gallery-item__meta">
-              <span class="gallery-item__date">{it.date}</span>
+          <article class="moments-rail__item" role="listitem">
+            <a href="/en/photos.html" aria-label={`Open ${it.title}`}>
+              {it.video ? (
+                <video class="moments-rail__media" src={it.video.src} poster={it.video.poster} muted playsinline preload="metadata" loop></video>
+              ) : (
+                <img
+                  class="moments-rail__media"
+                  src={it.image.md}
+                  srcset={`${it.image.sm} 480w, ${it.image.md} 960w, ${it.image.lg} 1600w`}
+                  sizes="(max-width: 920px) 84vw, 28vw"
+                  alt={it.title}
+                  loading="lazy"
+                />
+              )}
+            </a>
+            <div class="moments-rail__meta">
+              <span>{it.date}</span>
               <span aria-hidden="true">·</span>
-              <span class="gallery-item__title">{it.title}</span>
-            </figcaption>
-          </figure>
+              <span>{it.title}</span>
+            </div>
+          </article>
         ))}
       </div>
     </section>
@@ -157,7 +175,7 @@ const jsonLd = {
       <h2>Build with AI into XR & hospitality ops</h2>
       <p>Email for pilots, co-research, talks, or system walkthroughs.</p>
       <div class="contact-card__actions">
-        <a class="button button--primary" href="mailto:C.yibo2@gmail.com">Email Kateiso</a>
+        <a class="button button--primary" href="mailto:C.yibo2@gmail.com">Email Kateiso Cao</a>
         <a class="button button--ghost" href="/en/contact.html">More contact options</a>
       </div>
       <div class="social-links" aria-label="Social links">

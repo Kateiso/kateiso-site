@@ -27,7 +27,7 @@ Purpose
 
 - Location: src/content/posts/*.md
 - Required frontmatter (date is coerced; YAML unquoted dates are OK):
-  - title: string (≤60; page title suffix “ · Kateiso” is automatic)
+  - title: string (≤60; page title suffix “ · Kateiso Cao” is automatic)
   - description: string (140–160 chars)
   - type: string (e.g., Essay | Note | Case | Lab | Guide | Field note | Toolkit)
   - date: 2025-10-27 (coerced to Date by schema)
@@ -67,11 +67,9 @@ Purpose
   - “Recent moments” gallery shows latest items from the shared manifest.
 - Photos (src/pages/photos.astro)
   - Uses the same manifest as Home.
-  - Masonry-style listing with larger media, no white borders.
-  - Featured large item at top with prev/next.
-  - Lightbox with keyboard navigation:
+  - Instagram-style stream cards with immersive media viewport and no black/white borders.
+  - Fullscreen viewer with keyboard navigation:
     - ESC closes; Left/Right navigate.
-    - When lightbox is closed, Left/Right cycle the featured item.
   - Year filter via ?year=YYYY.
 - Blog index (src/pages/blog/index.astro)
   - Renders posts from content collection; includes a client-side search field.
@@ -132,3 +130,7 @@ Purpose
   - feat(photos): ...
   - fix(routes): use .html links for top-level pages
   - fix(content): coerce post dates to Date and serialize dates in search JSON
+
+  Backlog Reminders
+
+- TODO(next): add a dedicated AI into Dining case page for the Wangge Yucun project (already commercialized with revenue), including public-safe problem/solution/outcome metrics.

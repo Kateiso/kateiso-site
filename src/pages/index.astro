@@ -2,55 +2,57 @@
 import Base from "../../src/layouts/Base.astro";
 import fs from 'node:fs/promises';
 import { getCollection } from 'astro:content';
-const pageTitle = 'Kateiso · AI into XR & AI into Dining';
+import { normalizeGalleryItems } from '../utils/gallery';
+
+const pageTitle = 'Kateiso Cao · AI into XR & AI into Dining';
 const pageDesc = '定居宁波，在威海攻读 Lancaster × 北京交通大学双学位，专注 AI into XR 与 AI into Dining。';
+
 let gallery = [] as any[];
 try {
   const raw = await fs.readFile('public/assets/data/gallery.json', 'utf8');
   const json = JSON.parse(raw);
-  gallery = (json.items || []).slice(0, 6);
+  gallery = normalizeGalleryItems(json.items || []).slice(0, 8);
 } catch {}
-const posts = (await getCollection('posts')).sort((a,b) => (a.data.date < b.data.date ? 1 : -1)).slice(0, 3);
+
+const posts = (await getCollection('posts'))
+  .sort((a, b) => (a.data.date < b.data.date ? 1 : -1))
+  .slice(0, 3);
+
 const portrait = '/assets/media/gallery/2025-05-23-vison-pro-at-jinan.jpeg';
 const timeline = [
-  { 
-    year: '2025', 
+  {
+    year: '2025',
     detail: [
       'Human AI Co-Memory 毕设进行中，创造人机共同记忆体验；',
-      '并聚焦 AI 在 XR 中的垂直应用。'
-    ]
+      '并聚焦 AI 在 XR 中的垂直应用。',
+    ],
   },
-  { year: '2024', detail: '把AI into Dining定为长期课题，优化门店表现。' },
+  { year: '2024', detail: '把 AI into Dining 定为长期课题，优化门店表现。' },
   { year: '2022', detail: '进入北京交通大学、Lancaster 联合培养项目，主修数媒-交互。' },
-  { year: '2003', detail: '出生于宁波，习惯把海风的节奏记下来。' }
+  { year: '2003', detail: '出生于宁波，习惯把海风的节奏记下来。' },
 ];
+
 const focusAreas = [
-  {
-    title: 'AI into XR',
-    summary: 'AI 在 XR 场景下的垂直应用',
-    link: '/projects.html'
-  },
-  {
-    title: 'AI into 餐饮',
-    summary: '做 AI 技术（LLM、Agent）在餐饮领域的垂直应用',
-    link: '/projects.html'
-  }
+  { title: 'AI into XR', summary: 'AI 在 XR 场景下的垂直应用', link: '/projects.html' },
+  { title: 'AI into 餐饮', summary: '做 AI 技术（LLM、Agent）在餐饮领域的垂直应用', link: '/projects.html' },
 ];
+
 const socials = [
   { name: 'Email', icon: '/assets/icons/mail.svg', href: 'mailto:C.yibo2@gmail.com' },
   { name: 'X', icon: '/assets/icons/x.svg', href: 'https://x.com/kateiso63760' },
   { name: 'Douyin', icon: '/assets/icons/douyin.svg', href: 'https://www.douyin.com/user/MS4wLjABAAAAHCcB9BtLlZP-iSutvkW8oHPPHeSj_IR9rBa5uIq0L3drZDGzCcLmAaTFCozmXLH5?from_tab_name=main' },
   { name: 'YouTube', icon: '/assets/icons/youtube.svg', href: 'https://www.youtube.com/@KateisoCao' },
   { name: '小红书', icon: '/assets/icons/xiaohongshu.svg', href: 'https://www.xiaohongshu.com/user/profile/5e3ba904000000000100b699' },
-  { name: 'Bilibili', icon: '/assets/icons/bilibili.svg', href: 'https://space.bilibili.com/394045010?spm_id_from=333.1007.0.0' }
+  { name: 'Bilibili', icon: '/assets/icons/bilibili.svg', href: 'https://space.bilibili.com/394045010?spm_id_from=333.1007.0.0' },
 ];
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebPage',
-  name: 'Kateiso',
+  name: 'Kateiso Cao',
   description: pageDesc,
   inLanguage: 'zh-Hans',
-  url: 'https://kateiso.dev/index.html'
+  url: 'https://kateiso.dev/index.html',
 };
 ---
 <Base
@@ -64,12 +66,12 @@ const jsonLd = {
 >
   <section class="hero hero--profile" id="top">
     <div class="hero__portrait">
-      <img src={portrait} alt="Kateiso" loading="lazy" />
+      <img src={portrait} alt="Kateiso Cao" loading="lazy" />
     </div>
     <div class="hero__content">
       <p class="hero__kicker">Weihai Campus · Ningbo Home</p>
-      <h1>Kateiso</h1>
-      <p class="hero__subtitle">专注 AI into XR 与AI into Dining，期待与你链接～</p>
+      <h1>Kateiso Cao</h1>
+      <p class="hero__subtitle">专注 AI into XR 与 AI into Dining，期待与你链接。</p>
       <div class="hero__actions">
         <a class="button button--primary" href="/projects.html">项目概览</a>
         <a class="button button--ghost" href="/blog.html">博客文章</a>
@@ -115,24 +117,34 @@ const jsonLd = {
       <div class="section__intro section__intro--split">
         <div>
           <h2>近期瞬间</h2>
-          <!-- End of Selection -->
+          <p class="section__lede">流式浏览近况，点击任意卡片进入沉浸查看。</p>
         </div>
         <a class="section__link" href="/photos.html">进入相册 →</a>
       </div>
-      <div class="gallery-grid home-gallery">
+
+      <div class="moments-rail" role="list">
         {gallery.map((it) => (
-          <figure class="gallery-item">
-            {it.video ? (
-              <video class="gallery-item__media" src={it.video} poster={it.image} muted playsinline preload="metadata" loop></video>
-            ) : (
-              <img class="gallery-item__media" src={it.image} alt={it.title} loading="lazy" />
-            )}
-            <figcaption class="gallery-item__meta">
-              <span class="gallery-item__date">{it.date}</span>
+          <article class="moments-rail__item" role="listitem">
+            <a href="/photos.html" aria-label={`打开 ${it.title}`}>
+              {it.video ? (
+                <video class="moments-rail__media" src={it.video.src} poster={it.video.poster} muted playsinline preload="metadata" loop></video>
+              ) : (
+                <img
+                  class="moments-rail__media"
+                  src={it.image.md}
+                  srcset={`${it.image.sm} 480w, ${it.image.md} 960w, ${it.image.lg} 1600w`}
+                  sizes="(max-width: 920px) 84vw, 28vw"
+                  alt={it.title}
+                  loading="lazy"
+                />
+              )}
+            </a>
+            <div class="moments-rail__meta">
+              <span>{it.date}</span>
               <span aria-hidden="true">·</span>
-              <span class="gallery-item__title">{it.title}</span>
-            </figcaption>
-          </figure>
+              <span>{it.title}</span>
+            </div>
+          </article>
         ))}
       </div>
     </section>

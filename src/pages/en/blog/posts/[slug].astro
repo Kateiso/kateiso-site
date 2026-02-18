@@ -35,14 +35,14 @@ const articleJsonLd = {
   '@type': 'Article',
   headline: post.data.title,
   description: post.data.summary || post.data.description,
-  author: { '@type': 'Person', name: 'Kateiso' },
+  author: { '@type': 'Person', name: 'Kateiso Cao' },
   datePublished: post.data.date instanceof Date ? post.data.date.toISOString() : String(post.data.date),
   inLanguage: isFallback ? 'zh-Hans' : 'en',
   url: `https://kateiso.dev${canonical}`,
 };
 ---
 <Base
-  title={`${post.data.title} · Kateiso`}
+  title={`${post.data.title} · Kateiso Cao`}
   description={post.data.description}
   lang="en"
   canonical={canonical}

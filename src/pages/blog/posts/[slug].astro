@@ -12,7 +12,7 @@ export async function getStaticPaths() {
 
 const { post, englishSlug } = Astro.props;
 const { Content } = await post.render();
-const pageTitle = `${post.data.title} · Kateiso`;
+const pageTitle = `${post.data.title} · Kateiso Cao`;
 const pageDesc = post.data.description;
 const meta = `${post.data.type || 'Essay'} · ${new Date(post.data.date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`;
 const canonical = `/blog/posts/${post.slug}.html`;
@@ -22,7 +22,7 @@ const articleJsonLd = {
   '@type': 'Article',
   headline: post.data.title,
   description: post.data.summary || post.data.description,
-  author: { '@type': 'Person', name: 'Kateiso' },
+  author: { '@type': 'Person', name: 'Kateiso Cao' },
   datePublished: post.data.date instanceof Date ? post.data.date.toISOString() : String(post.data.date),
   inLanguage: 'zh-Hans',
   url: `https://kateiso.dev${canonical}`,

@@ -1,19 +1,26 @@
 ---
 import Base from "../../src/layouts/Base.astro";
 import fs from 'node:fs/promises';
-const pageTitle = '相册 · Kateiso';
-const pageDesc = '共享 manifest 的相册，记录 XR、旅途与日常的轻盈片段。';
+import { normalizeGalleryItems } from '../utils/gallery';
+
+const pageTitle = '相册 · Kateiso Cao';
+const pageDesc = 'Instagram 风格照片与视频流，记录 XR、旅途与日常。';
+
 let items = [] as any[];
 try {
   const raw = await fs.readFile('public/assets/data/gallery.json', 'utf8');
   const json = JSON.parse(raw);
-  items = json.items || [];
+  items = normalizeGalleryItems(json.items || []);
 } catch {}
 
-const years = Array.from(new Set(items.map((i) => (i.date || '').slice(0,4)))).filter(Boolean).sort((a,b) => (a < b ? 1 : -1));
+const years = Array.from(new Set(items.map((i) => (i.date || '').slice(0, 4))))
+  .filter(Boolean)
+  .sort((a, b) => (a < b ? 1 : -1));
+
 const url = new URL(Astro.request.url);
 const activeYear = url.searchParams.get('year');
 const filtered = activeYear ? items.filter((i) => (i.date || '').startsWith(activeYear)) : items;
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
@@ -30,11 +37,11 @@ const jsonLd = {
   canonical="/photos.html"
   jsonLd={jsonLd}
 >
-  <section class="section photos-page">
+  <section class="section photos-page photos-page--immersive">
     <div class="section__intro section__intro--split">
       <div>
-        <h1>相册</h1>
-        <p class="section__lede">Enjoy Life, Enjoy with U.</p>
+        <h1>相册流</h1>
+        <p class="section__lede">像刷 Instagram 一样看照片和视频，沉浸、顺滑、无黑白边。</p>
       </div>
       <nav aria-label="Year filter" class="photos-filter">
         <a href="/photos.html" class={activeYear ? '' : 'is-active'}>全部</a>
@@ -42,151 +49,142 @@ const jsonLd = {
       </nav>
     </div>
 
-    <!-- Featured large media -->
-    {filtered.length > 0 && (
-      <section class="photos-featured" aria-label="Featured photo">
-        <div class="photos-featured__inner">
-          {filtered[0].video ? (
-            <video class="photos-featured__media" src={filtered[0].video} poster={filtered[0].image} muted playsinline controls preload="metadata"></video>
-          ) : (
-            <img class="photos-featured__media" src={filtered[0].image} alt={filtered[0].title} />
-          )}
-          <div class="photos-featured__meta">
-            <span class="photos-featured__date">{filtered[0].date}</span>
-            <span aria-hidden="true">·</span>
-            <span class="photos-featured__title">{filtered[0].title}</span>
-            <button class="photos-featured__open" data-index="0" aria-label="打开灯箱">查看</button>
-          </div>
-          <button class="photos-featured__nav photos-featured__nav--prev" aria-label="上一张">‹</button>
-          <button class="photos-featured__nav photos-featured__nav--next" aria-label="下一张">›</button>
-        </div>
-      </section>
-    )}
-
-    <div class="gallery-grid gallery--masonry" id="gallery">
-      {filtered.map((it) => (
-        <figure class="gallery-item">
-          <button class="gallery-item__btn" data-image={it.image} data-video={it.video || ''} data-title={it.title} data-date={it.date} aria-label={`查看 ${it.title}`} data-index={filtered.indexOf(it)}>
+    <div class="photo-stream" id="photo-stream">
+      {filtered.map((it, index) => (
+        <article class="photo-stream__card">
+          <button class="photo-stream__media-wrap" data-index={index} aria-label={`查看 ${it.title}`}>
             {it.video ? (
-              <video class="gallery-item__media" src={it.video} poster={it.image} muted playsinline preload="metadata" loop></video>
+              <video
+                class="photo-stream__media"
+                src={it.video.src}
+                poster={it.video.poster}
+                muted
+                playsinline
+                preload="metadata"
+                loop
+              ></video>
             ) : (
-              <img class="gallery-item__media" src={it.image} alt={it.title} loading="lazy" />
+              <img
+                class="photo-stream__media"
+                src={it.image.md}
+                srcset={`${it.image.sm} 480w, ${it.image.md} 960w, ${it.image.lg} 1600w`}
+                sizes="(max-width: 800px) 100vw, 50vw"
+                alt={it.title}
+                loading={index < 4 ? 'eager' : 'lazy'}
+              />
             )}
-            <figcaption class="gallery-item__meta">
-              <span class="gallery-item__date">{it.date}</span>
-              <span aria-hidden="true">·</span>
-              <span class="gallery-item__title">{it.title}</span>
-            </figcaption>
           </button>
-        </figure>
+          <div class="photo-stream__meta">
+            <p class="photo-stream__title">{it.title}</p>
+            <p class="photo-stream__date">{it.date}</p>
+            <div class="photo-stream__actions">
+              <button class="photo-stream__action photo-stream__action--like" type="button" aria-label="喜欢这条内容">♥</button>
+              <button class="photo-stream__action" type="button" data-index={index} aria-label="全屏查看">全屏</button>
+            </div>
+          </div>
+        </article>
       ))}
     </div>
   </section>
 
-  <div class="lightbox" id="lightbox" hidden>
-    <button class="lightbox__backdrop" data-action="close" aria-label="关闭"></button>
-    <div class="lightbox__inner" role="dialog" aria-modal="true">
-      <figure>
-        <div id="lightbox-media"></div>
-        <figcaption class="lightbox__caption"><span id="lightbox-date"></span> · <span id="lightbox-title"></span></figcaption>
-      </figure>
-      <button class="lightbox__nav lightbox__nav--prev" aria-label="上一张">‹</button>
-      <button class="lightbox__nav lightbox__nav--next" aria-label="下一张">›</button>
-      <button class="lightbox__close" data-action="close" aria-label="关闭">✕</button>
+  <div class="photo-viewer" id="photo-viewer" hidden>
+    <button class="photo-viewer__backdrop" data-action="close" aria-label="关闭查看器"></button>
+    <div class="photo-viewer__panel" role="dialog" aria-modal="true" aria-label="媒体查看器">
+      <button class="photo-viewer__close" data-action="close" aria-label="关闭">✕</button>
+      <button class="photo-viewer__nav photo-viewer__nav--prev" aria-label="上一条">‹</button>
+      <button class="photo-viewer__nav photo-viewer__nav--next" aria-label="下一条">›</button>
+      <div class="photo-viewer__media" id="photo-viewer-media"></div>
+      <footer class="photo-viewer__meta">
+        <p id="photo-viewer-title"></p>
+        <p id="photo-viewer-date"></p>
+      </footer>
     </div>
   </div>
 
   <script>
-    const lb = document.getElementById('lightbox');
-    const media = document.getElementById('lightbox-media');
-    const title = document.getElementById('lightbox-title');
-    const date = document.getElementById('lightbox-date');
     const items = JSON.parse(document.getElementById('photos-data')?.textContent || '[]');
+    const viewer = document.getElementById('photo-viewer');
+    const media = document.getElementById('photo-viewer-media');
+    const title = document.getElementById('photo-viewer-title');
+    const date = document.getElementById('photo-viewer-date');
     let currentIndex = 0;
 
-    function renderLightbox(idx) {
-      const it = items[idx];
+    function prefetch(index) {
+      const it = items[index];
+      if (!it || !it.image?.md) return;
+      const img = new Image();
+      img.src = it.image.md;
+    }
+
+    function render(index) {
+      const it = items[index];
       if (!it) return;
       title.textContent = it.title || '';
       date.textContent = it.date || '';
       media.innerHTML = '';
-      if (it.video) {
+
+      if (it.video?.src) {
         const v = document.createElement('video');
-        v.src = it.video;
-        v.poster = it.image || '';
+        v.src = it.video.src;
+        v.poster = it.video.poster || it.image?.lg || '';
         v.controls = true;
         v.autoplay = true;
         v.playsInline = true;
+        v.className = 'photo-viewer__asset';
         media.appendChild(v);
-      } else if (it.image) {
-        const i = document.createElement('img');
-        i.src = it.image;
-        i.alt = title.textContent || '';
-        media.appendChild(i);
+      } else {
+        const img = document.createElement('img');
+        img.src = it.image?.lg || it.image?.md || '';
+        img.alt = it.title || '';
+        img.className = 'photo-viewer__asset';
+        media.appendChild(img);
       }
+
+      prefetch((index + 1) % items.length);
+      prefetch((index - 1 + items.length) % items.length);
     }
 
-    function openAt(idx) {
-      currentIndex = (idx + items.length) % items.length;
-      renderLightbox(currentIndex);
-      lb.hidden = false;
+    function openAt(index) {
+      if (!items.length) return;
+      currentIndex = (index + items.length) % items.length;
+      render(currentIndex);
+      viewer.hidden = false;
       document.body.style.overflow = 'hidden';
     }
 
-    document.querySelectorAll('.gallery-item__btn').forEach((btn) => {
+    function closeViewer() {
+      viewer.hidden = true;
+      document.body.style.overflow = '';
+      const v = media.querySelector('video');
+      if (v) v.pause();
+    }
+
+    function go(delta) {
+      openAt(currentIndex + delta);
+    }
+
+    document.querySelectorAll('[data-index]').forEach((btn) => {
       btn.addEventListener('click', () => {
         const idx = Number(btn.getAttribute('data-index') || '0');
         openAt(idx);
       });
     });
 
-    document.querySelector('.photos-featured__open')?.addEventListener('click', () => openAt(0));
-    document.querySelector('.photos-featured__nav--prev')?.addEventListener('click', () => switchFeatured(-1));
-    document.querySelector('.photos-featured__nav--next')?.addEventListener('click', () => switchFeatured(1));
-
-    lb.addEventListener('click', (e) => {
-      if ((e.target).dataset?.action === 'close') {
-        lb.hidden = true;
-        document.body.style.overflow = '';
-        const v = media.querySelector('video');
-        if (v) v.pause();
-      }
-    });
-    document.querySelector('.lightbox__nav--prev')?.addEventListener('click', () => { openAt(currentIndex - 1); });
-    document.querySelector('.lightbox__nav--next')?.addEventListener('click', () => { openAt(currentIndex + 1); });
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !lb.hidden) {
-        lb.hidden = true;
-        document.body.style.overflow = '';
-        const v = media.querySelector('video');
-        if (v) v.pause();
-        return;
-      }
-      if (e.key === 'ArrowLeft') {
-        if (!lb.hidden) openAt(currentIndex - 1); else switchFeatured(-1);
-      } else if (e.key === 'ArrowRight') {
-        if (!lb.hidden) openAt(currentIndex + 1); else switchFeatured(1);
+    viewer?.addEventListener('click', (event) => {
+      if (event.target?.dataset?.action === 'close') {
+        closeViewer();
       }
     });
 
-    function switchFeatured(delta) {
-      if (!items.length) return;
-      currentIndex = (currentIndex + delta + items.length) % items.length;
-      const it = items[currentIndex];
-      const container = document.querySelector('.photos-featured__inner');
-      if (!container) return;
-      const mediaWrap = container.querySelector('.photos-featured__media');
-      if (mediaWrap) mediaWrap.remove();
-      const meta = container.querySelector('.photos-featured__meta');
-      if (meta) {
-        meta.querySelector('.photos-featured__date').textContent = it.date || '';
-        meta.querySelector('.photos-featured__title').textContent = it.title || '';
-      }
-      const node = it.video ? Object.assign(document.createElement('video'), { src: it.video, poster: it.image || '', controls: true, playsInline: true }) : Object.assign(document.createElement('img'), { src: it.image, alt: it.title || '' });
-      node.className = 'photos-featured__media';
-      container.prepend(node);
-    }
+    document.querySelector('.photo-viewer__nav--prev')?.addEventListener('click', () => go(-1));
+    document.querySelector('.photo-viewer__nav--next')?.addEventListener('click', () => go(1));
+
+    document.addEventListener('keydown', (event) => {
+      if (viewer.hidden) return;
+      if (event.key === 'Escape') closeViewer();
+      if (event.key === 'ArrowLeft') go(-1);
+      if (event.key === 'ArrowRight') go(1);
+    });
   </script>
-  <script type="application/json" id="photos-data">{JSON.stringify(filtered)}</script>
+  <script type="application/json" id="photos-data" set:html={JSON.stringify(filtered)}></script>
 </Base>
