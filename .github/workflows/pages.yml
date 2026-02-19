@@ -32,7 +32,7 @@ jobs:
         run: npm ci
       - name: Build
         env:
-          PUBLIC_CHAT_API_BASE: https://kai-chat-gateway-316255291165.us-central1.run.app
+          PUBLIC_CHAT_API_BASE: https://kai-chat-gateway-sbvdirxv5q-uc.a.run.app
           PUBLIC_CHAT_PROVIDER: gemini
         run: npm run build
       - name: Upload artifact
