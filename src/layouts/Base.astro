@@ -9,6 +9,7 @@ interface LanguageToggleConfig {
   ariaLabel?: string;
 }
 export interface Props {
+  homeTheme?: boolean;
   title?: string;
   description?: string;
   lang?: string;
@@ -22,6 +23,7 @@ export interface Props {
 const defaultTitle = 'Kateiso Cao';
 const defaultDesc = '享受生活，享受与智能系统共创。记录 Kateiso Cao 的创意系统与实践。';
 const {
+  homeTheme = false,
   title = defaultTitle,
   description = defaultDesc,
   lang = 'zh-Hans',
@@ -56,17 +58,20 @@ const baseJsonLd = [
   {
     '@context': 'https://schema.org',
     '@type': 'Person',
+    '@id': 'https://kateiso.dev/#person',
     name: 'Kateiso Cao',
+    alternateName: ['曹益波', 'Yibo Cao', 'Kateio'],
     url: 'https://kateiso.dev/index.html',
     email: 'mailto:C.yibo2@gmail.com',
     sameAs: [
-      'https://x.com/KateisoCao',
-      'https://www.douyin.com/user/MS4wLjABAAAAHCcB9BtLlZP-iSutvkW8oHPPHeSj_IR9rBa5uIq0L3drZDGzCcLmAaTFCozmXLH5?from_tab_name=main',
+      'https://github.com/Kateiso',
     ],
   },
   {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
+    '@id': 'https://kateiso.dev/#website',
+    author: { '@id': 'https://kateiso.dev/#person' },
     name: 'Kateiso Cao',
     url: 'https://kateiso.dev/index.html',
     inLanguage: lang,
@@ -97,6 +102,7 @@ const structuredData = [...baseJsonLd, ...computedJsonLd];
       <link rel="alternate" hrefLang={link.hrefLang} href={new URL(link.href, siteUrl).toString()} />
     ))}
     <link rel="stylesheet" href="/assets/css/styles.css" />
+    {homeTheme && <link rel="stylesheet" href="/assets/css/home.css" />}
     <link rel="icon" href="/favicon.jpg" type="image/jpeg" />
     <script defer data-domain="kateiso.dev" src="https://plausible.io/js/script.js"></script>
     {structuredData.length > 0 && (
@@ -104,11 +110,12 @@ const structuredData = [...baseJsonLd, ...computedJsonLd];
     )}
   </head>
   <body
-    class={Astro.url.pathname.startsWith('/blog') ? 'with-subpage-header' : ''}
+    class:list={[{ 'home-theme': homeTheme, 'with-subpage-header': Astro.url.pathname.includes('/blog') }]}
     data-chat-api={chatApiBase}
     data-chat-provider={chatProvider}
     data-chat-persona="kai-v1"
   >
+    <a class="skip-link" href="#main-content">{isEnglish ? 'Skip to content' : '跳到主要内容'}</a>
     <header class="site-header" data-js="nav">
       <div class="site-header__inner">
         <a class="site-logo" href={isEnglish ? '/en/index.html' : '/index.html'} aria-label="Kateiso Cao Home">
@@ -136,7 +143,7 @@ const structuredData = [...baseJsonLd, ...computedJsonLd];
       </div>
     </header>
 
-    <main>
+    <main id="main-content">
       <slot />
     </main>
 
@@ -157,7 +164,7 @@ const structuredData = [...baseJsonLd, ...computedJsonLd];
       {isEnglish ? 'Chat with Kai' : '和 Kai 聊聊'}
     </button>
 
-    <aside class="kai-drawer" id="kai-drawer" data-js="kai-drawer" aria-hidden="true">
+    <aside class="kai-drawer" id="kai-drawer" data-js="kai-drawer" aria-hidden="true" inert>
       <div class="kai-drawer__header">
         <div>
           <p class="kai-drawer__kicker">Kai</p>

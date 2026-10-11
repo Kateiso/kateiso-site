@@ -1,7 +1,7 @@
 ---
 import Base from "../../../src/layouts/Base.astro";
 const pageTitle = '项目 · Kateiso Cao';
-const pageDesc = '聚焦 AI into XR 与AI into的两个主线项目。';
+const pageDesc = '探索 AI 在 XR 体验与餐饮运营中的应用。';
 const projects = [
   {
     title: 'HACM 人机共忆',
@@ -40,7 +40,7 @@ const jsonLd = {
     <div class="section__intro">
       <p class="hero__kicker">Projects</p>
       <h1>项目</h1>
-      <p class="section__lede">所有工作都 AI into XR 以及 AI into Dining 展开。</p>
+      <p class="section__lede">围绕 AI into XR 与 AI into Dining，探索技术走进真实生活的方式。</p>
     </div>
     <div class="project-grid">
       {projects.map((item) => (
@@ -54,5 +54,6 @@ const jsonLd = {
         </article>
       ))}
     </div>
+    <p><a href="/projects/ai-into-dining.html">阅读网格渔村 AI into Dining 案例</a></p>
   </section>
 </Base>

@@ -134,3 +134,12 @@ Purpose
   Backlog Reminders
 
 - TODO(next): add a dedicated AI into Dining case page for the Wangge Yucun project (already commercialized with revenue), including public-safe problem/solution/outcome metrics.
+
+  Remote operations (user2)
+
+- Local preview only: `npm run preview -- --host 127.0.0.1 --port 4321`. Stop the preview process started for this project; never stop unrelated Node processes.
+- Monitoring: Windows tasks `Kateiso-Site-Daily` (09:15), `Kateiso-Site-Weekly` (Sunday 10:15), and `Kateiso-Site-Final-Report` (2027-01-09 23:45), local Asia/Taipei time.
+- Start a check: `Start-ScheduledTask -TaskName Kateiso-Site-Daily`. Stop monitoring: `Disable-ScheduledTask -TaskName Kateiso-Site-Daily`; repeat for Weekly and Final-Report.
+- Logs: `D:\user2\logs\kateiso-site`. Script: `scripts/monitor-site.py`. Checks use public HTTP only and stop after 2027-01-09. Weekly files are review checklists, not automated AI ranking results.
+- Tasks run as user2 with Interactive logon: SSH disconnection is safe, but user2 must remain logged into Windows. Passwordless S4U registration was denied; do not claim logged-out execution support.
+- Do not publish `work/` migration logs, manifests or account recovery notes. Verify domain ownership before deployment; the custom domain was serving unrelated gambling content on 2026-10-11.

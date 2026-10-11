@@ -1,7 +1,7 @@
 ---
 import Base from "../../../../src/layouts/Base.astro";
 const pageTitle = 'Projects · Kateiso Cao';
-const pageDesc = 'Two threads: AI into XR memory rituals and TasteOS for hospitality ops.';
+const pageDesc = 'Kateiso Cao explores spatial memory with AI and XR, and restaurant digitalization through AI into Dining.';
 const projects = [
   {
     title: 'Human–AI Co-Memory (HACM)',
@@ -11,10 +11,10 @@ const projects = [
     tags: ['XR', 'HACM', 'Experience']
   },
   {
-    title: 'TasteOS',
+    title: 'AI into Dining',
     role: 'Hospitality ops',
-    period: 'R&D · 2025',
-    summary: 'Forecast covers, sync prep lists, and merge guest feedback with kitchen execution.',
+    period: '2024 – present',
+    summary: 'Brand design, cross-channel meal packages, automated short-video publishing, and customer acquisition, retention and repeat visits.',
     tags: ['Hospitality', 'Ops', 'Forecast']
   }
 ];
@@ -40,8 +40,9 @@ const jsonLd = {
     <div class="section__intro">
       <p class="hero__kicker">Projects</p>
       <h1>Projects</h1>
-      <p class="section__lede">Everything I ship fits either AI into XR memory or TasteOS for restaurants.</p>
+      <p class="section__lede">Exploring how AI and XR connect with memory and everyday restaurant operations.</p>
     </div>
+    <p><a href="/en/projects/ai-into-dining.html">Read the Wangge Yucun AI into Dining case</a></p>
     <div class="project-grid">
       {projects.map((item) => (
         <article class="project-card">
@@ -72,7 +73,7 @@ const jsonLd = {
       </article>
       <article class="lane-card">
         <h3>Review</h3>
-        <p>Monthly retros refresh HACM manuals and TasteOS modules.</p>
+        <p>Review what works in spatial experiences and restaurant operations.</p>
       </article>
     </div>
   </section>

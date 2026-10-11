@@ -19,6 +19,14 @@
         menu.classList.toggle('is-open', !isOpen);
       });
 
+      nav.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+          toggle.setAttribute('aria-expanded', 'false');
+          menu.classList.remove('is-open');
+          toggle.focus();
+        }
+      });
+
       menu.addEventListener('click', (event) => {
         if (event.target instanceof HTMLAnchorElement) {
           toggle.setAttribute('aria-expanded', 'false');
@@ -78,6 +86,7 @@
     });
 
     const openDrawer = () => {
+      drawer.inert = false;
       drawer.classList.add('is-open');
       drawer.setAttribute('aria-hidden', 'false');
       toggle.setAttribute('aria-expanded', 'true');
@@ -86,6 +95,8 @@
     };
 
     const closeDrawer = () => {
+      toggle.focus();
+      drawer.inert = true;
       drawer.classList.remove('is-open');
       drawer.setAttribute('aria-hidden', 'true');
       toggle.setAttribute('aria-expanded', 'false');

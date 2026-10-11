@@ -668,3 +668,7 @@ body.chat-open {
     scroll-behavior: auto !important;
   }
 }
+
+/* Keep keyboard navigation visible without changing pointer navigation. */
+.skip-link{position:fixed;left:1rem;top:-100px;z-index:1000;padding:12px 20px;background:#fff;color:#173b32;border:2px solid currentColor;border-radius:6px}
+.skip-link:focus{top:1rem}

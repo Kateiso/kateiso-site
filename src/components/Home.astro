@@ -1,0 +1,80 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import fs from 'node:fs/promises';
+import { normalizeGalleryItems } from '../utils/gallery';
+const { english = false } = Astro.props;
+const root = english ? '/en' : '';
+const t = (zh: string, en: string) => english ? en : zh;
+const description = t('我是 Kateiso Cao，探索 AI、XR 与真实生活之间的连接。这里是我的项目、实验、照片与思考。', 'I’m Kateiso Cao. Exploring the connections between AI, XR and everyday life through projects, experiments, photographs and writing.');
+const raw = JSON.parse(await fs.readFile('public/assets/data/gallery.json', 'utf8'));
+const gallery = normalizeGalleryItems(raw.items || []).slice(0, 6);
+const posts = (await getCollection(english ? 'postsEn' : 'posts')).sort((a,b) => b.data.date.getTime() - a.data.date.getTime()).slice(0,3);
+const image = '/assets/media/gallery/2025-05-23-vison-pro-at-jinan-lg.webp';
+---
+<Base title={t('曹益波 | Kateiso Cao · AI、XR 与日常生活', 'Kateiso Cao | Yibo Cao · AI, XR & everyday life')} description={description} lang={english ? 'en' : 'zh-Hans'} canonical={`${root}/index.html`} alternates={[{href: english ? '/index.html' : '/en/index.html', hrefLang:english ? 'zh-Hans' : 'en'}]} languageToggle={{href:english ? '/index.html' : '/en/index.html',label:english ? '中文' : 'EN'}} ogImage={image} homeTheme>
+  <section class="drive" aria-labelledby="home-name">
+    <div class="drive__photo"><img src={image} srcset="/assets/media/gallery/2025-05-23-vison-pro-at-jinan-md.webp 960w, /assets/media/gallery/2025-05-23-vison-pro-at-jinan-lg.webp 1400w" sizes="100vw" alt={t('Kateiso 戴着 Vision Pro 探索空间交互', 'Kateiso exploring spatial interaction with Vision Pro')} width="1400" height="1866" fetchpriority="high" /></div>
+    <div class="drive__content">
+      <p class="drive__intro">{t('曹益波 / Kateiso Cao', 'Kateiso Cao / 曹益波')}</p>
+      <h1 id="home-name"><span>{t('让记忆', 'A memory,')}</span><span>{t('有了空间。', 'with room to enter.')}</span></h1>
+      <div class="drive__bottom"><p>{t('把想象，带进现实。', 'Bring imagination into reality.')}<br/><span>{t('探索 AI、XR 与日常生活的交汇。', 'At the intersection of AI, XR and everyday life.')}</span></p><a class="drive__button" href="#work">{t('探索我的项目', 'Explore my work')}<span aria-hidden="true">↘</span></a></div>
+    </div>
+    <p class="drive__caption">{t('济南，2025 / 初探空间计算', 'Jinan, 2025 / Exploring spatial computing')}</p>
+    <div class="memory-switch" role="group" aria-label={t('选择记忆场景', 'Choose a memory')}>
+      <button type="button" aria-pressed="true" data-memory="xr">{t('空间计算', 'Spatial computing')}</button>
+      <button type="button" aria-pressed="false" data-memory="water">{t('水上的一天', 'A day on the water')}</button>
+    </div>
+  </section>
+
+  <section class="manifesto" aria-label={t('关于我', 'About me')}>
+    <p class="manifesto__label">{t('保持好奇，继续创造。', 'Stay curious. Keep making.')}</p>
+    <h2>{t('在真实与想象之间，', 'Between the real')}<br/>{t('寻找新的可能。', 'and the possible.')}</h2>
+    <div class="manifesto__body"><p class="identity">曹益波<br/>Kateiso Cao</p><div><p>{t('我是曹益波，英文名 Kateiso Cao，也使用 Yibo Cao 和 Kateio。用 AI 和空间交互探索记忆，也把技术带进餐饮与日常生活。这里记录我做过的项目、拍下的照片和持续更新的思考。', 'I’m 曹益波, known as Kateiso Cao. I also use Yibo Cao and Kateio. I explore memory through AI and spatial interaction, and bring technology into restaurants and everyday life. This is a record of my projects, photographs and writing.')}</p><a class="identity-link" href={`${root}/contact.html`}>{t('找到我的公开账号', 'Find my public profiles')}</a></div></div>
+  </section>
+
+  <section class="work-showcase" id="work" aria-labelledby="work-heading">
+    <div class="home-heading"><h2 id="work-heading">{t('正在探索', 'In the making')}</h2><a href={`${root}/projects.html`}>{t('查看全部项目', 'All projects')} <span aria-hidden="true">↗</span></a></div>
+    <a class="work-feature work-feature--xr" href={`${root}/projects.html`}>
+      <img src={image} alt="" width="1400" height="1866" loading="lazy" />
+      <div class="work-feature__copy"><p>{t('空间交互与记忆', 'Spatial interaction & memory')}</p><h3>Human–AI<br/>Co-Memory</h3><p>{t('用 AI 与 XR，探索重新走进记忆的方式。', 'Exploring ways to step back into memories with AI and XR.')}</p><span class="round-arrow" aria-hidden="true">↗</span></div>
+    </a>
+    <a class="work-feature work-feature--dining" href={`${root}/projects/ai-into-dining.html`}>
+      <div class="work-feature__copy"><p>{t('餐饮与智能系统', 'Hospitality & intelligent systems')}</p><h3>AI into<br/>Dining</h3><p>{t('从品牌到运营，让技术走进真实的餐厅。', 'Bringing technology into real restaurants, from brand to operations.')}</p><span class="round-arrow" aria-hidden="true">↗</span></div>
+    </a>
+  </section>
+
+  <section class="offscreen" aria-labelledby="offscreen-heading">
+    <div class="offscreen__intro"><p>{t('屏幕之外，还有生活。', 'There’s life beyond the screen.')}</p><h2 id="offscreen-heading">OFF<br/>SCREEN.</h2><a class="drive__button" href={`${root}/photos.html`}>{t('翻开我的相册', 'Explore my photos')}<span aria-hidden="true">↗</span></a></div>
+    <figure class="offscreen__photo"><img src="/assets/media/gallery/2025-08-05-play-sup-at-ningbo-lg.webp" alt={t('宁波的桨板时光', 'Paddleboarding in Ningbo')} width="1400" height="1866" loading="lazy"/><figcaption>{t('宁波 · 桨板时光 / 2025', 'Ningbo · On the water / 2025')}</figcaption></figure>
+  </section>
+
+  {gallery.length > 0 && <section class="home-moments" aria-labelledby="moments-heading"><div class="home-heading"><h2 id="moments-heading">{t('最近的片段', 'Recent moments')}</h2><p>{t('一些值得留下的瞬间。', 'A few moments to keep.')}</p></div><div class="filmstrip">{gallery.map(it => <a class="filmstrip__item" href={`${root}/photos.html`}><img src={it.image.md} alt={it.title} loading="lazy" width="480" height="600"/><span><time datetime={it.date}>{it.date}</time><span>{it.title}</span></span></a>)}</div></section>}
+
+  <section class="home-journal" aria-labelledby="journal-heading"><div class="home-heading"><h2 id="journal-heading">{t('想法，留个记录。', 'Notes along the way.')}</h2><a href={`${root}/blog.html`}>{t('全部文章', 'All writing')} <span aria-hidden="true">↗</span></a></div>{posts.map(post => <a class="home-post" href={`${root}/blog/posts/${post.slug}.html`}><time datetime={post.data.date.toISOString()}>{post.data.date.toLocaleDateString(english ? 'en-GB' : 'zh-CN',{year:'numeric',month:'short',day:'numeric'})}</time><div><h3>{post.data.title}</h3><p>{post.data.summary}</p></div><span aria-hidden="true">↗</span></a>)}</section>
+
+  <section class="home-contact"><p>{t('下一个想法，从一次对话开始。', 'The next idea starts with a conversation.')}</p><h2>LET’S<br/>MAKE IT.</h2><a class="drive__button" href="mailto:C.yibo2@gmail.com">{t('给我写信', 'Say hello')}<span aria-hidden="true">↗</span></a><a class="home-contact__more" href={`${root}/contact.html`}>{t('更多联系方式', 'More ways to connect')}</a></section>
+<script>
+  const drive = document.querySelector<HTMLElement>('.drive');
+  const photo = drive?.querySelector<HTMLImageElement>('.drive__photo img');
+  const caption = drive?.querySelector<HTMLElement>('.drive__caption');
+  const en = document.documentElement.lang.startsWith('en');
+  const memories = {
+    xr: { slug: '2025-05-23-vison-pro-at-jinan', alt: en ? 'Kateiso exploring spatial interaction with Vision Pro' : 'Kateiso 戴着 Vision Pro 探索空间交互', caption: en ? 'Jinan, 2025 / Exploring spatial computing' : '济南，2025 / 初探空间计算' },
+    water: { slug: '2025-08-05-play-sup-at-ningbo', alt: en ? 'Paddleboarding in Ningbo' : '宁波的桨板时光', caption: en ? 'Ningbo, 2025 / A day on the water' : '宁波，2025 / 水上的一天' }
+  };
+  drive?.querySelectorAll<HTMLButtonElement>('[data-memory]').forEach(button => {
+    button.addEventListener('click', () => {
+      const key = button.dataset.memory as keyof typeof memories;
+      const memory = memories[key];
+      if (!photo || !caption || !memory) return;
+      photo.srcset = '';
+      photo.src = `/assets/media/gallery/${memory.slug}-lg.webp`;
+      photo.alt = memory.alt;
+      caption.textContent = memory.caption;
+      drive.dataset.memory = key;
+      drive.querySelectorAll('[data-memory]').forEach(other => other.setAttribute('aria-pressed', String(other === button)));
+    });
+  });
+</script>
+</Base>
