@@ -14,10 +14,10 @@ const image = '/assets/media/gallery/2025-05-23-vison-pro-at-jinan-lg.webp';
 ---
 <Base title={t('曹益波 | Kateiso Cao · AI、XR 与日常生活', 'Kateiso Cao | Yibo Cao · AI, XR & everyday life')} description={description} lang={english ? 'en' : 'zh-Hans'} canonical={`${root}/index.html`} alternates={[{href: english ? '/index.html' : '/en/index.html', hrefLang:english ? 'zh-Hans' : 'en'}]} languageToggle={{href:english ? '/index.html' : '/en/index.html',label:english ? '中文' : 'EN'}} ogImage={image} homeTheme>
   <section class="drive" aria-labelledby="home-name">
-    <div class="drive__photo"><img src={image} srcset="/assets/media/gallery/2025-05-23-vison-pro-at-jinan-md.webp 960w, /assets/media/gallery/2025-05-23-vison-pro-at-jinan-lg.webp 1400w" sizes="100vw" alt={t('Kateiso 戴着 Vision Pro 探索空间交互', 'Kateiso exploring spatial interaction with Vision Pro')} width="1400" height="1866" fetchpriority="high" /></div>
+    <div class="drive__photo"><img src={image} srcset="/assets/media/gallery/2025-05-23-vison-pro-at-jinan-md.webp 960w, /assets/media/gallery/2025-05-23-vison-pro-at-jinan-lg.webp 1400w" sizes="(max-width: 600px) 90vw, 46vw" alt={t('Kateiso 戴着 Vision Pro 探索空间交互', 'Kateiso exploring spatial interaction with Vision Pro')} width="1400" height="1866" fetchpriority="high" /></div>
     <div class="drive__content">
       <p class="drive__intro">{t('曹益波 / Kateiso Cao', 'Kateiso Cao / 曹益波')}</p>
-      <h1 id="home-name"><span>{t('让记忆', 'A memory,')}</span><span>{t('有了空间。', 'with room to enter.')}</span></h1>
+      <h1 id="home-name" aria-label="Kateiso Cao / 曹益波"><span>KATEISO</span><span>CAO<span class="name-dot" aria-hidden="true">.</span></span></h1>
       <div class="drive__bottom"><p>{t('把想象，带进现实。', 'Bring imagination into reality.')}<br/><span>{t('探索 AI、XR 与日常生活的交汇。', 'At the intersection of AI, XR and everyday life.')}</span></p><a class="drive__button" href="#work">{t('探索我的项目', 'Explore my work')}<span aria-hidden="true">↘</span></a></div>
     </div>
     <p class="drive__caption">{t('济南，2025 / 初探空间计算', 'Jinan, 2025 / Exploring spatial computing')}</p>
@@ -64,17 +64,38 @@ const image = '/assets/media/gallery/2025-05-23-vison-pro-at-jinan-lg.webp';
     water: { slug: '2025-08-05-play-sup-at-ningbo', alt: en ? 'Paddleboarding in Ningbo' : '宁波的桨板时光', caption: en ? 'Ningbo, 2025 / A day on the water' : '宁波，2025 / 水上的一天' }
   };
   drive?.querySelectorAll<HTMLButtonElement>('[data-memory]').forEach(button => {
-    button.addEventListener('click', () => {
+    button.addEventListener('click', async () => {
       const key = button.dataset.memory as keyof typeof memories;
       const memory = memories[key];
       if (!photo || !caption || !memory) return;
+      const next = new Image();
+      next.src = `/assets/media/gallery/${memory.slug}-lg.webp`;
+      try { await next.decode(); } catch { return; }
+      if (!button.isConnected) return;
       photo.srcset = '';
       photo.src = `/assets/media/gallery/${memory.slug}-lg.webp`;
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        photo.animate([{ opacity: .3, transform: 'scale(.98)' }, { opacity: 1, transform: 'scale(1)' }], { duration: 400, easing: 'ease-out' });
+      }
       photo.alt = memory.alt;
       caption.textContent = memory.caption;
       drive.dataset.memory = key;
       drive.querySelectorAll('[data-memory]').forEach(other => other.setAttribute('aria-pressed', String(other === button)));
     });
   });
+  if (drive && window.matchMedia('(hover: hover) and (prefers-reduced-motion: no-preference)').matches) {
+    const frame = drive.querySelector<HTMLElement>('.drive__photo');
+    drive.addEventListener('pointermove', event => {
+      const rect = drive.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / rect.width - .5;
+      const y = (event.clientY - rect.top) / rect.height - .5;
+      frame?.style.setProperty('--tilt-x', `${-y * 4}deg`);
+      frame?.style.setProperty('--tilt-y', `${x * 4}deg`);
+    });
+    drive.addEventListener('pointerleave', () => {
+      frame?.style.setProperty('--tilt-x', '0deg');
+      frame?.style.setProperty('--tilt-y', '0deg');
+    });
+  }
 </script>
 </Base>
