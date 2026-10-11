@@ -41,12 +41,14 @@ const resolvedOgImage = ogImage.startsWith('http') ? ogImage : new URL(ogImage, 
 const isEnglish = lang?.startsWith('en');
 const navItems = isEnglish
   ? [
+      { href: '/en/blog/posts/names-and-work.html', label: 'About' },
       { href: '/en/projects.html', label: 'Projects' },
       { href: '/en/blog.html', label: 'Blog' },
       { href: '/en/photos.html', label: 'Photos' },
       { href: '/en/contact.html', label: 'Contact' },
     ]
   : [
+      { href: '/blog/posts/names-and-work.html', label: '关于' },
       { href: '/projects.html', label: '项目' },
       { href: '/blog.html', label: '博客' },
       { href: '/photos.html', label: '相册' },
