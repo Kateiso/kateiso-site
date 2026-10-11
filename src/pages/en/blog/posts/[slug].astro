@@ -35,7 +35,7 @@ const articleJsonLd = {
   '@type': 'Article',
   headline: post.data.title,
   description: post.data.summary || post.data.description,
-  author: { '@type': 'Person', '@id': 'https://kateiso.dev/#person', name: 'Kateiso Cao', url: 'https://kateiso.dev/blog/posts/names-and-work.html' },
+  author: { '@type': 'Person', '@id': 'https://kateiso.dev/#person', name: 'Kateiso Cao', url: 'https://kateiso.dev/' },
   datePublished: post.data.date instanceof Date ? post.data.date.toISOString() : String(post.data.date),
   inLanguage: isFallback ? 'zh-Hans' : 'en',
   url: `https://kateiso.dev${canonical}`,
@@ -59,7 +59,7 @@ const articleJsonLd = {
   <PostLayout
     lang={isFallback ? 'zh-Hans' : 'en'}
     title={post.data.title}
-    description={post.data.summary || post.data.description}
+    description={post.data.summary}
     meta={meta}
   >
     <Content />

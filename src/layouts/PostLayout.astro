@@ -16,7 +16,7 @@ const footerCopy = lang.startsWith('en')
       <header class="article__header">
         <p class="article__meta">{meta}</p>
         <h1>{title}</h1>
-        <p class="article__summary">{description}</p>
+        {description && <p class="article__summary">{description}</p>}
       </header>
       <slot />
       <footer class="article__footer">
