@@ -62,6 +62,6 @@ const articleJsonLd = {
     description={post.data.summary}
     meta={meta}
   >
-    <Content />
+    {post.data.preserveFormatting ? <div class="original-text" style="white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.9;">{post.body.trim()}</div> : <Content />}
   </PostLayout>
 </Base>
