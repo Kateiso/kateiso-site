@@ -10,6 +10,7 @@ const posts = defineCollection({
     summary: z.string(),
     preserveFormatting: z.boolean().default(false),
     cover: z.string().optional(),
+    coverAlt: z.string().optional(),
     tags: z.array(z.string()).default([]),
   }),
 });
@@ -24,6 +25,7 @@ const postsEn = defineCollection({
     summary: z.string(),
     preserveFormatting: z.boolean().default(false),
     cover: z.string().optional(),
+    coverAlt: z.string().optional(),
     tags: z.array(z.string()).default([]),
   }),
 });

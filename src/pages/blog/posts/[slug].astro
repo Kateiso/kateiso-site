@@ -35,6 +35,7 @@ const articleJsonLd = {
   canonical={canonical}
   alternates={alternates}
   languageToggle={englishSlug ? { href: `/en/blog/posts/${englishSlug}.html`, label: 'EN', ariaLabel: 'View English version' } : undefined}
+  ogImage={post.data.cover ? `/${post.data.cover}` : undefined}
   pageType="article"
   jsonLd={articleJsonLd}
 >
@@ -44,6 +45,7 @@ const articleJsonLd = {
     description={post.data.summary}
     meta={meta}
   >
+    {post.data.cover && <img src={`/${post.data.cover}`} alt={post.data.coverAlt || post.data.title} style="display: block; width: 100%; height: auto; margin: 0 0 2rem;" />}
     {post.data.preserveFormatting ? <div class="original-text" style="white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.9;">{post.body.trim()}</div> : <Content />}
   </PostLayout>
 </Base>

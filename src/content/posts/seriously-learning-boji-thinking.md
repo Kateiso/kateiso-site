@@ -5,6 +5,8 @@ type: 观看笔记
 date: 2026-10-12
 summary: ""
 preserveFormatting: true
+cover: assets/media/posts/seriously-learning-boji-thinking/podcast.png
+coverAlt: 播客对话截图拼图，包含关于薄肌、国力与战略储备资源的字幕
 tags: [播客, 薄肌思维, 孙宇晨, 邵Alan, 创造, 生活]
 ---
 
